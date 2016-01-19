@@ -25,16 +25,15 @@ library(devtools) # needed for DySeq-installation
 ### Installing DySeq from GitHub ###
 ####################################
 
+# remove.packages("DySeq"), if a previous version of DySeq is installed 
 install_github("PeFox/DySeq") # make sure Devtools is installed an loaded!
 library(DySeq) 
-# if a previous version of DySeq is installed it must be deleted first with: remove.packages("DySeq")
-
-# help(DySeq) # click on the help files Index for an overview of all functions and data
+# help(DySeq)
+# help(CouplesCope) # click on the help files Index for an overview of all functions and data
 
 #############################
 ### Loading example data  ###
 #############################
-
 
 data("CouplesCope") # loading example data
 View(CouplesCope) # looking into the data
@@ -80,13 +79,13 @@ seqdplot(couple.seq )
 
 par (mfrow = c(1,2))
 {
-  seqdplot(couple.seq)
+seqdplot(couple.seq)
 
-  Entropy <- seqstatd(couple.seq)$Entropy
-  plot(Entropy, main= "Entropy", col="black", xlab = "Time in 10 sec. intervall", type ="l")
+Entropy <- seqstatd(couple.seq)$Entropy
+plot(Entropy, main= "Entropy", col="black", xlab = "Time in 10 sec. intervall", type ="l")
 
-  Turbulance <- seqST (couple.seq)
-  hist (Turbulance, main = "Histrogram of turbulance")
+Turbulance <- seqST (couple.seq)
+hist (Turbulance, main = "Histrogram of turbulance")
 }
 
 par (mfrow = c(1,1)) # returning to one graphic per frame!
@@ -148,7 +147,7 @@ my.trans # inspecting the mean transitionsrates!
 which(mydata==129) # getting the row number for ID 129 from the original dataset
 
 my.trans[[41]] # inspecting couple 129 (rownumber 41)
-               # see table 2
+# see table 2
 
 
 # p.values are missing for single case analysis, but will be provided in the future
@@ -160,17 +159,17 @@ my.trans[[41]] # inspecting couple 129 (rownumber 41)
 # The LoqSeq function of the DySeq-Package can be used to simplfy this normaly cumbersome procedure
 
 my.logseq<-LogSeq(my.trans, delta=0.5, single.case=TRUE) # Delta is a constant added to every cell to prevent cells with zero frequencies
-                                                         # The higher delta, the more conservative biased the estimates (the are biased towards zero)
-                                                         # A delta of 0.5 is commonly used, but if no zero frequencies are present it should be
-                                                         # replaced with a zero!
-                                                         # If replaced with zero and zero frequencies are present, all cases with at least one
-                                                         # zero frequency cell will be excluded from analysis!
-                                                         # single.case=TRUE computes p-values for every single analysis!
+# The higher delta, the more conservative biased the estimates (the are biased towards zero)
+# A delta of 0.5 is commonly used, but if no zero frequencies are present it should be
+# replaced with a zero!
+# If replaced with zero and zero frequencies are present, all cases with at least one
+# zero frequency cell will be excluded from analysis!
+# single.case=TRUE computes p-values for every single analysis!
 
 # Single cases can be extracted via the single.LogSeq function
 
 single.LogSeq(my.logseq, 41) # here for couple 129 (rownumber 41)
-                             # see table 3
+# see table 3
 
 
 # Step 3: Aggregating

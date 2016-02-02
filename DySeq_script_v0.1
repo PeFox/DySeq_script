@@ -55,7 +55,6 @@ my.expand<-StateExpand(CouplesCope, 2:49, 50:97) # create combined sequences for
 
 
 
-
 ##########################
 ### GRAPHICAL ANALYSIS ###
 ##########################
@@ -205,28 +204,20 @@ my.logseq # estimates for actor- and partnereffect on coping
 
 ########################################################################
 ### Research Question 3:                                             ###
-### Does dyadic coping shorten the duration of stress communication? ###
-### And does a prolonged duration of dyadic coping benefit a shorter ###
-### duration of stress?                                              ###
+### NEU FORMULIEREN!!!!!!!!!!!                                       ###
 ########################################################################
 
 
-# investigating if DC ends with stress communication
+# Calculating the last occurance of stress communication (last.stress)
 
 last.stress<-LastOccur(mydata[,2:49],1)
-
-last.DC<-LastOccur(mydata[,50:97],1)
-
-mean(last.DC>last.stress)
-mean(last.DC<last.stress)
-mean(last.DC==last.stress)
 
 
 # Producing hazard, survival and cumhazard for stress duration
 
 # First a variable is needed that indicates if the event was shown (1) or not (0)
 event<-c(rep(1, length(last.stress))) # it is shown for every case!
-event[last.stress>=42]<-0 # exept the ones that show stress communication till time intervall 48
+event[last.stress>=48]<-0 # exept the ones that show stress communication till time intervall 48
 1-mean(event)
 stress.surv<-Surv(last.stress,event) # The duration and the event variable are combined in a Surv-object
 
@@ -244,44 +235,21 @@ plot(survfit(fit1), conf.int="none", xlab="Time", ylab="cumulated hazard", fun="
 
 NonCumHaz(survfit(fit1), plot=T) # Figure 6
 
+# returning to one one plot per frame
+par (mfrow = c(1,1)) 
 
-par (mfrow = c(1,1)) # returning to one one plot per frame
 
 
+# Adding the covariate: 
+# Dyad.Coping ability of the man rated by the woman
 
-# Adding duration of coping reaction directely as covariate
-
-fit2 <- coxph(stress.surv~last.DC) # fittet without a covariate
+fit2 <- coxph(stress.surv~mydata[,98]) # fittet without a covariate
 summary(fit2)
 
-
-
-# Adding the 'proportion of the stress communications duration in which dyadic coping was shown'
-
-# calculating the proportion
-
-
-prop.DC<-NumbOccur(mydata[,50:97],1, t=last.stress, prop=TRUE)
-# only sums the number of dyadic coping reaction from mydata,
-# which are coded als 1's,
-# but only till the time intervall of the last stress communication (t)
-# and devides them by the duration of stress reaction (prop=TRUE)
-log(2)
-
-
-prop.DC<-prop.DC*100
-fit3 <- coxph(stress.surv~prop.DC)
-summary(fit3)
-
-
-###### Prolonged vs. shortened dyadic coping
-
-
-
-prolong.DC<-(last.DC-last.stress)
-
-fit4 <- coxph(stress.surv~prolong.DC)
-summary(fit4)
+# Hazardratio is positive, higher ratings indicate more hazard
+# more hazard indicates shorter durations.
+# But is very close to one (no effect) and not sign. therefore
+# it is very likely that no effect exists or it is at least very small
 
 
 
@@ -295,7 +263,7 @@ summary(fit4)
 # We will use our Sequence-Object from the graphical analysis!
 # That is a special type of object used within the TraMineR-Package
 
-couple.seq # This was our Sequence object from lines 43 and 44
+# This was our Sequence object from lines 43 and 44
 
 
 

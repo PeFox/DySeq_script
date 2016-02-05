@@ -26,7 +26,7 @@ library(devtools) # needed for DySeq-installation
 ####################################
 
 # remove.packages("DySeq") # if a previous version of DySeq is installed 
-install_github("PeFox/DySeq") # make sure Devtools is installed an loaded!
+# install_github("PeFox/DySeq") # make sure Devtools is installed an loaded!
 library(DySeq) 
 # help(DySeq)
 # help(CouplesCope) # click on the help files Index for an overview of all functions and data
@@ -222,22 +222,44 @@ event[last.stress>=48]<-0 # exept the ones that show stress communication till t
 1-mean(event)
 stress.surv<-Surv(last.stress,event) # The duration and the event variable are combined in a Surv-object
 
-fit1 <- coxph(stress.surv~1) # fittet without a covariate
+fit1 <- coxph(stress.surv~1, ties="breslow") # fittet without a covariate
+
 
 # We can also plot the survival curve
 par (mfrow = c(1,3)) # creats a frame for three graphics
 
 # Survival and cumhazard are easy to produce with the survival package
-plot(survfit(fit1), conf.int="none", xlab="Time", ylab="Survival Probability")
+plot(survfit(fit1), conf.int="none", xlab="Time", ylab="Survival Probability", xlim=c(0,48))
+
+# Execute the following 9 lines only if Median Lifetime should be added!
+x <- 45
+y<-seq(0, 0.5, by=0.01)
+x<-rep(x,length(y)) 
+lines(x,y, lty=2)
+x<-seq(0, 45, by=0.1)
+y<-rep(0.5, length(x))
+lines(x,y, lty=2)
+x<-locator(1)
+text(x$x, x$y, "ML", cex=1.2)
+
 plot(survfit(fit1), conf.int="none", xlab="Time", ylab="cumulated hazard", fun="cumhaz")
 
 # yet, there is no option for the uncumulated hazard,
 # but the DySeq package provides one:
 
 NonCumHaz(survfit(fit1), plot=T) # Figure 6
+NonCumHaz(survfit(fit1))
+survfit(fit1)$surv
+survfit(fit1)$cumhaz
+cbind(NonCumHaz(survfit(fit1)),survfit(fit1)$time)
 
-# returning to one one plot per frame
+
+
+# returning to one plot per frame
 par (mfrow = c(1,1)) 
+
+
+
 
 
 
@@ -246,6 +268,8 @@ par (mfrow = c(1,1))
 
 fit2 <- coxph(stress.surv~mydata[,98]) # fittet without a covariate
 summary(fit2)
+
+
 
 # Hazardratio is positive, higher ratings indicate more hazard
 # more hazard indicates shorter durations.

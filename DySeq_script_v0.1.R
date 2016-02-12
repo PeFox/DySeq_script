@@ -265,9 +265,17 @@ par (mfrow = c(1,1))
 
 # Adding the covariate: 
 # Dyad.Coping ability of the man rated by the woman
-
-fit2 <- coxph(stress.surv~mydata[,98]) # fittet without a covariate
+cent<-mydata[,98]-mean(mydata[,98])
+fit2 <- coxph(stress.surv~cent, ties="breslow") # fittet without a covariate
 summary(fit2)
+
+plot(survfit(fit2)$time, NonCumHaz(survfit(fit2)), xlim=c(19,45), ylim=c(0,0.3), type="l", xlab="Time", ylab="predicted hazard")
+lines(survfit(fit2)$time, NonCumHaz(survfit(fit2))*1.15^5, lty=4)
+lines(survfit(fit2)$time, NonCumHaz(survfit(fit2))*1.15^-5, lty=2)
+
+x<-locator(1)
+legend(x$x, x$y, lty=c(1,4,2) )
+
 
 
 

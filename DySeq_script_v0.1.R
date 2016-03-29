@@ -410,7 +410,7 @@ exp.b<-unclass(summary(fit2))$coefficients[2]
 #####
 #
 #
-## Stoppt here!
+## Stoppt here!!!
 #
 #
 #####

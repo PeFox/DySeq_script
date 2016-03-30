@@ -47,9 +47,10 @@
 
 ## Research question 4:
 #  - OM-distances 
-#  - clustering
-#  - subgroup analyses
-
+#  - Number of clusters
+#  - Ward-Algorithm
+#  - Cluster interpretation &
+#    further analyses
 
 ## additional DySeq functions: 
 #  - needed number of time intervalls 
@@ -116,6 +117,8 @@ my.expand<-StateExpand(CouplesCope, 2:49, 50:97) # create combined sequences via
                                                  # cells: {0=no SC/DC; 1=SC only; 2=DC only; 4=SC+DC}
 
 
+
+
 #############################
 ##  3. GRAPHICAL ANALYSIS  ##
 #############################
@@ -161,6 +164,8 @@ cor(SeqL, mydata$EDCm) # the Number of transition can be investigated further.
                        # ability the less often couples change their states!
                     
 
+rm(list=c("couple.labels", "Entropy")) # these two objects are not needed in the 
+                                       # subsequent analyses!
 
 
 ###################################################################
@@ -194,7 +199,8 @@ plot(stress.sumscores, DC.sumscores, ylab="sum of DC", xlab="sum of SC")
 abline(lm(stress.sumscores~DC.sumscores))
 
 
-
+rm(list=c("DC.sumscores", "stress.sumscores")) # these two objects are not needed in the 
+                                               # subsequent analyses!
 
 
 ####################################################################
@@ -239,9 +245,6 @@ my.trans[[41]] # inspecting couple 129 (rownumber 41)
 # Or, if relative frequencies are preferred: 
 my.trans[[41]]/sum(my.trans[[41]]) 
 
-# Note:
-# p.values for single case analysis are missing at the moment
-# but will be provided in future versions
 
 
 ########################################
@@ -301,6 +304,10 @@ my.logseq # estimates for actor- and partnereffect on coping
 
 # (see fig. 4)
 
+
+
+# removing objects that are not necessary for the subsequent analyses
+rm(list=c("my.logseq", "my.logseq.stress")) 
 
 
 
@@ -383,6 +390,7 @@ par (mfrow = c(1,1))
 
 
 
+
 #################################################################
 ##  Cox-regression: Prediction of Hazard-ratio by a covariate  ##
 #################################################################
@@ -408,6 +416,13 @@ exp.b<-unclass(summary(fit2))$coefficients[2]
 
 
 
+# removing objects that are not necessary for the subsequent analyses
+rm(list=c("event", "fit1", "fit2", "last.stress", "exp.b", "EDCm.cent")) 
+
+
+
+
+
 
 
 ##################################################################
@@ -422,6 +437,8 @@ exp.b<-unclass(summary(fit2))$coefficients[2]
 #  - my.expand  
 #  - couple.seq (see line 131)
 #  - SeqL (see line 150)
+#  - my.trans (see line 217)
+#  - my.trans.stress(see line 293)
 
 
 # Introductionary: 
@@ -533,16 +550,15 @@ plot(agnes (dist.oml, diss=TRUE, method = "ward"), which.plots=2)
 
 
 
-###############################
-##  Applying Ward-algorithm  ##
-###############################
+######################
+##  Ward-algorithm  ##
+######################
 
 clusterward1 <- agnes (dist.oml, diss=TRUE, method = "ward") 
 
 # 2 Clustersolution [for other solution change the value behind the argument 'k']
 cluster2 <- cutree (clusterward1, k=2)
 cluster2fac <- factor (cluster2, labels = c("cluster 1; fast coper", "cluster 2; slow coper"))
-seqdplot (couple.seq, group = cluster2fac) #[figure 6 in the accompanying article]
 
 # [Note: The n of both clusters doesn't match exactly the n from the silhuette test! 
 #        This is because the latter depends on another algorithm. Typically they provide
@@ -556,58 +572,59 @@ seqdplot (couple.seq, group = cluster2fac) #[figure 6 in the accompanying articl
 
 
 
-###################
-#                 #
-#                 #
-###### BREAK ######
-#                 #
-#                 #
-###################
+#####################################################
+###  Cluster interpretation and further analyses  ###
+#####################################################
+
+
+## separate state-distribution plots 
+#  [note: figure 6 in the accompanying article]
+seqdplot (couple.seq, group = cluster2fac) 
+
+## coxregression with subgroups
+fit3 <- coxph(stress.surv~mydata$EDCm+cluster2fac)
+summary(fit3)
+
+## correlation between the cluster membership 
+#  and men’s self-assessed dyadic coping ability 
+
+clust2.dummy<-as.numeric(cluster2fac) # 
+clust2.dummy[clust2.dummy==1]<-0      # Dummycoding the factor as numeric
+clust2.dummy[clust2.dummy==2]<-1
+cor.test(mydata$EDCm,clust2.dummy) # note: pearson correlation between a dichotomous
+                                   #       and an interval scaled variable equals
+                                   #       a point biseral correlation and is therefore
+                                   #       the appropriate association measure!
+
+
+## separate aggregated logit models for both clusters
+#  [note: shown in table 8]
+
+# LogSeq provides an optional argument "subgroups" that allows to compare 
+# transitionstables for two groups 
+LogSeq(my.trans, delta=0.5, subgroups=cluster2) # Analysis for DC as dependend variable
+
+LogSeq(my.trans.stress, delta=0.5, subgroups=cluster2) # Analaysis for SC as dependend variable 
+                                                       # [note: not shown in the article]
+
+
+# removing surplus objects 
+rm(list=c("dist.oml", "SeqL", "submat", "clust2.dummy", "cluster2", "clusterward1", "fit3", "my.trans", "my.trans.stress", "stress.surv", "wss", "cluster2fac")) 
 
 
 
 
-
-
-# repeating the sequence analysis of Bakeman and Gottman for sperated groups
-# at the moment only implented for comparsion of two groups
-# if more clusters are found run the procedure several time,
-# and create a subgroup vector with a one's and tow's for the two clusters
-# that should be compared an zeros for the other clusters!
-# and be aware of alpha cumulation!
-LogSeq(my.trans, delta=0.5, subgroups=cluster2)
-
-LogSeq(my.trans.stress, delta=0.5, subgroups=cluster2)
-
-
-# coxregression with subgroups
-clust.dummy<-numeric(length(cluster2))
-clust.dummy[cluster2==1]<-0
-clust.dummy[cluster2==2]<-1 # recoding into dummy: first group is now coded 0, second is 1!
-
-
-# adding to our regression with the prolonged covariate
-fit5 <- coxph(stress.surv~mydata[,98]*as.factor(clust.dummy))
-summary(fit5)
-
-help(coxph)
-
-cor(mydata[,98],clust.dummy)
-summary(lm(mydata[,98]~clust.dummy))
-
-
-
-
-
-
-
-################################################################
-### Using EstFreq and EstTime to determine the number        ###
-### of expected zero and low frequencies cells               ###
-################################################################
+##########################
+##                      ##
+##  Additional content  ##
+##                      ##
+###############################################################
+###  Using EstFreq and EstTime to determine the number      ###
+###  of expected zero and low frequencies cells             ###
+###############################################################
 
 # First step: Define a matrinx conatining the expected transition rates!
-my.trans.table<-matrix(c(0.57, 0.13,0.05,0.05,0.05, 0.05,0.05,0.05),4,2)
+my.trans.table<-matrix(c(0.57, 0.13, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05),4,2)
 
 # Run EstFreq: t is number of timeintervall, min.cell defines what counts as low frequencies 
 # k is the number of simulations
@@ -628,4 +645,6 @@ my.EstTime.plot<-EstTime(my.trans.table, t=50:100, k=5000)
 
 # printing will result in a plot of time point vs. expected number of low and zero frequencies
 my.EstTime.plot
+
+
 

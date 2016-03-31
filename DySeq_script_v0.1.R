@@ -1,6 +1,6 @@
-###############################################
-### Installing & loading Packages from CRAN ###
-###############################################
+##########################################################################################
+### Analyzing dyadic sequence data - research questions and implied statistical models ###
+##########################################################################################
 
 ################
 ##  Preamble  ##
@@ -9,7 +9,7 @@
 # This R-script provides a hands-on-tutorial for all
 # analyses covered in 
 # "Analyzing dyadic sequence data - research questions and implied statistical models"
-# by ... , ... and ...
+# by  --- blinded for reviewing ---
 # 
 # Please make sure to install all required packages,
 # including the "Dyseq" which provides the sample data!
@@ -50,7 +50,7 @@
 #  - Cluster interpretation &
 #    further analyses
 
-## additional DySeq functions:            626-654 
+## additional DySeq functions:            628-661
 #  - needed number of time intervalls 
 
 
@@ -61,7 +61,7 @@
 ##  1. prerequisite steps  ##
 #############################
 
-##  installing & loading packages from CRAN
+##  make sure the following packages are installed:
 
 # install.packages("TraMineR")      # for graphical analysis and research question 4
 # install.packages("RColorBrewer")  # for grey-shaded graphics
@@ -73,19 +73,19 @@
 # install.packages("devtools")      # must be installed for installing packages from github
 
 # loading packages!
-library(cluster)
-library(fpc)
-library(survival)
-library(TraMineR)
-library(RColorBrewer) # only used for alternative Graphics
-library(devtools) # needed for DySeq-installation
+library(cluster)      # ward algorithm, opt. number of clusters
+library(fpc)          # optimal number of clusters
+library(survival)     # cox-regression
+library(TraMineR)     # graphical analysis, state-changes, entropy, OM-procedure
+library(RColorBrewer) # only used for alternative graphics
+library(devtools)     # needed for DySeq-installation
 
 
 
 ##  Installing DySeq from GitHub 
 
-# remove.packages("DySeq")          # if a previous version of DySeq is installed 
-# install_github("PeFox/DySeq")     # make sure Devtools is installed an loaded!
+# remove.packages("DySeq")          # run only if a previous version of DySeq is installed and should be updated! 
+# install_github("PeFox/DySeq")     # run only once for first installation!
 
 library(DySeq)                      # loading DySeq;
                                     # for further detail use help(DySeq) and click on the help file's index!
@@ -187,15 +187,15 @@ rm(list=c("couple.labels", "Entropy")) # these two objects are not needed in the
 
 # Step 1: Computing the frequencies of both behaviors,
 # using the function NumbOccur from the DySeq-package
-stress.sumscores<-NumbOccur(mydata[,2:49], 1, prop=FALSE)
-DC.sumscores<-NumbOccur(mydata[,50:97], 1, prop=FALSE)
+stress.sumscores<-NumbOccur(mydata[,2:49], 1, prop=FALSE) 
+DC.sumscores<-NumbOccur(mydata[,50:97], 1, prop=FALSE)    
 
 # Explanation:
-# Argument 1: Columns 2:49 are containing the stressreactions!
-# Argument 2: We are interested in the Numer of one's, because every '1' represents that this behavior was shown!
-# Argument 3: prop=FALSE provides absolute frequencies, while TRUE would provide relative frequencies.
-#             options would result in the same correlation, but absolute frequencies contain more information
-#             if further analysis should be conducted!
+# Argument 1: Columns 2:49 are containing the stress reactions (SC), 50 to 97 the dyadic coping reactions (DC).
+# Argument 2: We are interested in the state '1', because every '1' represents that SC / DC was shown
+# Argument 3: # prop=FALSE -> absolute frequencies 
+              # prop=TRUE  -> relative frequencies
+
 
 
 # Step 2: Correlation of both frequencies
@@ -207,7 +207,7 @@ abline(lm(stress.sumscores~DC.sumscores))
 
 
 rm(list=c("DC.sumscores", "stress.sumscores")) # these two objects are not needed in the 
-                                               # subsequent analyses!
+                                               # subsequent analyses and therefore are removed!
 
 
 ####################################################################
@@ -240,10 +240,10 @@ my.trans # calling the list containing the state-transition tables
          # shows the mean transition frequencies!
 
 
-# However, if a single case should be inspected, the row number is needed. 
+# If a single case should be inspected, the row number is needed. 
 # For example, if the couple with ID 129 should be inspected, one could 
-# use which to determine the row number of ID 129 from the dataset:
-which(mydata$code==129)  
+# use which() to determine the row number of ID 129 from the dataset:
+which(mydata$code==129) # gives the rownumber 41  
                         
 my.trans[[41]] # inspecting couple 129 (rownumber 41)
                # btw: the transistion-tables are stored within a list; 
@@ -267,15 +267,15 @@ my.logseq<-LogSeq(my.trans, delta=0.5, single.case=TRUE)
 # First Argument must be a List of dichotomous transition-tables. 
 # Delta is a constant added to every cell to prevent cells with zero frequencies.
 # The higher the delta the more conservative biased the estimates. 
-# A value of zero should be used if no zero frequencies exist or if
+# A value of zero should be used if no zero frequencies exist, or if
 # all cases with zero frequencies should be stripped from the analysis 
-# (listwise deletion)
+# (listwise deletion).
 # single.case=TRUE computes p-values for every single analysis!
-# Single cases can be extracted via the single.LogSeq function
-# However, p-values for the single case analysis may not be 
-# trustworthy at the moment (inconsistent with other software implementations).
-# p-values for the overall effects are checked and are consistent with
-# the results obtained by other software implementations (SPSS, Lem, etc.)
+# Single cases can be extracted via the single.LogSeq function (see l. 280)
+# However, p-values for the single case analysis may not be trustworthy 
+# at the moment (difer from the results of other software implementations by 
+# the forth digit for this example). P-values for the overall effects are checked 
+# and match the results obtained by other software implementations (SPSS, Lem)
 
 single.LogSeq(my.logseq, 41) # here for couple 129 (rownumber 41)
 # see table 3
@@ -336,9 +336,9 @@ rm(list=c("my.logseq", "my.logseq.stress"))
 
 last.stress<-LastOccur(mydata[,2:49],y=1)
 # mydata[,2:49] accesses only the SC-sequences of mydata
-# second Argument y specifies if the last observed 0 or 1 should be computed
+# second Argument y specifies if the last observed '0' or '1' should be optained
 # Note: other values for y are possible, but most other functions 
-#       of DySeq will only support dichotomous sequences.
+#       of the DySeq-package will only support dichotomous sequences.
 
 
 
@@ -346,19 +346,19 @@ last.stress<-LastOccur(mydata[,2:49],y=1)
 #  Hazard, survival and cumhazard  #
 ####################################
 
-# First a variable is needed that indicates if the event was shown (1) or not (0)
+# First a variable is needed that indicates if the event was shown (1; observed) or not (0; censored)
 event<-c(rep(1, length(last.stress))) # it is shown for every case!
 event[last.stress>=48]<-0 # exept the ones that show stress communication till time intervall 48
 
 # the mean of the new vector "event" equals the relative frequency of couples in which the 
-# event occored 1 minus this frequency equals the relative frequency of censored cases
+# event occored. One minus that frequency equals the relative frequency of censored cases.
 1-mean(event)
 
 # The duration and the event variable are combined in a Surv-object
 stress.surv<-Surv(last.stress,event) 
 
-fit1 <- coxph(stress.surv~1, ties="breslow") # ~1 means: fittet without a covariate
-                                             # different estimators exist to handle 
+fit1 <- coxph(stress.surv~1, ties="breslow") # ~1 means: fittet without a covariate.
+                                             # Different estimators exist for handling 
                                              # multiple events within one time-interval 
                                              # in the article "breslow" was shown
 
@@ -399,7 +399,7 @@ par (mfrow = c(1,1))
 
 
 #################################################################
-##  Cox-regression: Prediction of Hazard-ratio by a covariate  ##
+##  Cox-regression: Prediction of hazard-ratio by a covariate  ##
 #################################################################
 
 
@@ -545,7 +545,7 @@ plot(pam(dist.oml, pamk(dist.oml)$nc), which.plot=1)
 
 # The mean silhuette value indactes an overall weak cluster structure.
 # Therefore, additional methods should be used to determine the optimal 
-# number of clusters. Here, for example:
+# number of clusters. Here, for example, screeplot/dendrogramm:
 
 # Screeplot: (Indicates 1 or 2 clusters)
 wss <- (nrow(dist.oml)-1)*sum(apply(mydata,2,var))
@@ -596,7 +596,7 @@ summary(fit3)
 #  and men’s self-assessed dyadic coping ability 
 
 clust2.dummy<-as.numeric(cluster2fac) # 
-clust2.dummy[clust2.dummy==1]<-0      # Dummycoding the factor as numeric
+clust2.dummy[clust2.dummy==1]<-0      # Dummycoding the factor as a numeric vector
 clust2.dummy[clust2.dummy==2]<-1
 cor.test(mydata$EDCm,clust2.dummy) # note: pearson correlation between a dichotomous
                                    #       and an interval scaled variable equals
@@ -608,15 +608,17 @@ cor.test(mydata$EDCm,clust2.dummy) # note: pearson correlation between a dichoto
 #  [note: shown in table 8]
 
 # LogSeq provides an optional argument "subgroups" that allows to compare 
-# transitionstables for two groups 
+# transition tables for two groups 
 LogSeq(my.trans, delta=0.5, subgroups=cluster2) # Analysis for DC as dependend variable
 
-LogSeq(my.trans.stress, delta=0.5, subgroups=cluster2) # Analaysis for SC as dependend variable 
+LogSeq(my.trans.stress, delta=0.5, subgroups=cluster2) # Analysis for SC as dependend variable 
                                                        # [note: not shown in the article]
 
 
 # removing surplus objects 
-rm(list=c("dist.oml", "SeqL", "submat", "clust2.dummy", "cluster2", "clusterward1", "fit3", "my.trans", "my.trans.stress", "stress.surv", "wss", "cluster2fac")) 
+rm(list=c("dist.oml", "SeqL", "submat", "clust2.dummy", 
+          "cluster2", "clusterward1", "fit3", "my.trans", 
+          "my.trans.stress", "stress.surv", "wss", "cluster2fac")) 
 
 
 
@@ -653,5 +655,9 @@ my.EstTime.plot<-EstTime(my.trans.table, t=50:100, k=5000)
 # printing will result in a plot of time point vs. expected number of low and zero frequencies
 my.EstTime.plot
 
+# if legend position should be change:
+attr(my.EstTime.plot, "pos")<-"topright" # alternatives are: bottomleft (default)
+my.EstTime.plot                          #                   bottomright
+                                         #                   topleft         
 
 

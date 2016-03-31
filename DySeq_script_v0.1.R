@@ -14,46 +14,46 @@
 # Please make sure to install all required packages,
 # including the "Dyseq" which provides the sample data!
 
-### Content                         Lines
+### Content                               Lines
 
-## A.1 Prerequisite Steps      
-#  - packages from CRAN             28-48
-#  - package from Github            49-55
+## A.1 Prerequisite Steps                 28-55
+#  - packages from CRAN                   
+#  - package from Github                  
 
-## A.2 Example Data
-#  - loading the data
-#  - details on data 
+## A.2 Example Data                       96-117
+#  - loading the data                     
+#  - details on data                      
 
-## A.3 Graphical Analysis
-#  - state-distribution-plot
-#  - entropy-plot
-#  - Number of transitions 
+## A.3 Graphical Analysis                 123-170
+#  - state-distribution-plot              
+#  - entropy-plot                         
+#  - Number of transitions                
 
-## Research question 1:
-#  - Pearson Correlation 
+## Research question 1:                   179-209
+#  (Pearson Correlation) 
  
-## Research question 2:
+## Research question 2:                   214-311
 #  (aggregated logit models)
-#  - state-transition tables
-#  - multiple logit-regressions
-#  - aggregating
+#  - step 1: state-transition tables
+#  - step 2: multiple logit-regressions
+#  - step 3: aggregating
 #  - further Analysis, APIM
 
-## Research question 3:
-#  - transforming sequence-data 
-#    into time-to-event-data
+## Research question 3:                   324-422
 #  - Hazard, survival and cumhazard
 #  - cox-regression
 
-## Research question 4:
+## Research question 4:                   436-614
 #  - OM-distances 
 #  - Number of clusters
 #  - Ward-Algorithm
 #  - Cluster interpretation &
 #    further analyses
 
-## additional DySeq functions: 
+## additional DySeq functions:            626-654 
 #  - needed number of time intervalls 
+
+
 
 
 
@@ -166,6 +166,13 @@ cor(SeqL, mydata$EDCm) # the Number of transition can be investigated further.
 
 rm(list=c("couple.labels", "Entropy")) # these two objects are not needed in the 
                                        # subsequent analyses!
+
+
+
+
+#######################################
+##  4. potential research questions  ##
+#######################################
 
 
 ###################################################################
@@ -301,8 +308,8 @@ my.logseq.stress<-LogSeq(my.trans.stress, delta=0.5)
 
 my.logseq.stress # estimates for actor- and partnereffect on stress
 my.logseq # estimates for actor- and partnereffect on coping
-
 # (see fig. 4)
+
 
 
 

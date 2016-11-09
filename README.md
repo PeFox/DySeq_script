@@ -1,33 +1,28 @@
-##########################################################################################
-### Analyzing dyadic sequence data - research questions and implied statistical models ###
-##########################################################################################
 
-################
-##  Preamble  ##
-################
+##Analyzing dyadic sequence data - research questions and implied statistical models 
 
-# This R-script provides a hands-on-tutorial for all
-# analyses covered in 
-# "Analyzing dyadic sequence data - research questions and implied statistical models"
-# by  --- blinded for reviewing ---
-# 
-# Please make sure to install all required packages,
-# including the "Dyseq" which provides the sample data!
+This R-script provides a hands-on-tutorial for all
+analyses covered in 
+"Analyzing dyadic sequence data - research questions and implied statistical models"
+by  --- blinded for reviewing ---
+ 
+Please make sure to install all required packages,
+including the "Dyseq" which provides the sample data!
 
-### Content                               Lines
+Content                               Lines
 
-## A.1 Prerequisite Steps                 28-55
-#  - packages from CRAN                   
-#  - package from Github                  
+1. Prerequisite Steps                28-55
+  * packages from CRAN                   
+  * package from Github                  
 
-## A.2 Example Data                       96-117
-#  - loading the data                     
-#  - details on data                      
+2. Example Data                       96-117
+  * loading the data                     
+  * details on data                      
 
-## A.3 Graphical Analysis                 123-170
-#  - state-distribution-plot              
-#  - entropy-plot                         
-#  - Number of transitions                
+3. Graphical Analysis                 123-170
+  * state-distribution-plot              
+  * entropy-plot                         
+  * Number of transitions                
 
 ## Research question 1:                   179-209
 #  (Pearson Correlation) 

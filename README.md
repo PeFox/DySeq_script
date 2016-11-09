@@ -9,30 +9,32 @@ by  --- blinded for reviewing ---
 Please make sure to install all required packages,
 including the "Dyseq" which provides the sample data!
 
-Content                               Lines
+Content                  
 
-1. Prerequisite Steps                28-55
+1. Prerequisite Steps                
   * packages from CRAN                   
   * package from Github                  
 
-2. Example Data                       96-117
+2. Example Data                      
   * loading the data                     
   * details on data                      
 
-3. Graphical Analysis                 123-170
+3. Graphical Analysis                 
   * state-distribution-plot              
   * entropy-plot                         
   * Number of transitions                
 
-## Research question 1:                   179-209
-#  (Pearson Correlation) 
+4. Research question 1  
+  * Pearson Correlation 
  
-## Research question 2:                   214-311
-#  (aggregated logit models)
-#  - step 1: state-transition tables
-#  - step 2: multiple logit-regressions
-#  - step 3: aggregating
-#  - further Analysis, APIM
+5. Research question 2:                   
+  * aggregated logit models
+  ** step 1: state-transition tables
+  ** step 2: multiple logit-regressions
+  **  - step 3: aggregating
+  ** further Analysis, APIM
+  * Multi-Level-Approach
+  **
 
 ## Research question 3:                   324-422
 #  - Hazard, survival and cumhazard

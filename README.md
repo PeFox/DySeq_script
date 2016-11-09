@@ -29,12 +29,12 @@ Content
  
 5. Research question 2:                   
   * aggregated logit models
-  ** step 1: state-transition tables
-  ** step 2: multiple logit-regressions
-  **  - step 3: aggregating
-  ** further Analysis, APIM
-  * Multi-Level-Approach
-  **
+    * step 1: state-transition tables
+    * step 2: multiple logit-regressions
+    * step 3: aggregating
+  * further Analysis, APIM
+    * Multi-Level-Approach
+    *
 
 ## Research question 3:                   324-422
 #  - Hazard, survival and cumhazard

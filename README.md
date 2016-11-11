@@ -257,6 +257,24 @@ No further functions are needed! Again, p-values test whether the betas are not 
 my.logseq  # prints the aggrregated results!
 ```
 
-Plotting the results will produce an interaction-plot. Mapping the probabilities of showing the dependend variable against the combinations of previous behavior.  
+Plotting the results will produce an interaction-plot. Mapping the probabilities of showing the dependend variable against the combinations of previous behavior:
+
+```r
+plot(my.logseq)
+```
 
 ![alt text](https://github.com/PeFox/DySeq_script/blob/master/Interac.png "Scatterplot(SC,DC)")
+
+
+### Bakeman & Gottman approach: Step 4
+
+Rerunning the procedure a second time but switching the dependend variable. 
+
+```r
+my.trans.SC<-StateTrans(my.expand, first=TRUE)   # This time, the first sequence is the DV
+my.logseq.SC<-LogSeq(my.trans.SC, delta=0.5) 
+
+my.logseq.SC # Contains actor and partner effects for the female
+```     
+
+Our previous results from step 3 contained the effects for men, while our second results (my.logseq.SC) contain the effects for women. Thus, combining both results in a APIM as shown in the article. 

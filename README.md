@@ -58,5 +58,12 @@ Content
 
 make sure the following packages are installed:
 
-`<Test>`
+`# install.packages("TraMineR")      # for graphical analysis and research question 4`
+`# install.packages("RColorBrewer")  # for grey-shaded graphics`
+`# install.packages("gmodels")       # must be installed!`
+`# install.packages("MASS")          # must be installed!`
+`# install.packages("survival")      # must be installed for research question 3!`
+`# install.packages("fpc")           # must be installed for research question 4!`
+`# install.packages("cluster")       # must be installed for research question 4!`
+`# install.packages("devtools")      # must be installed for installing packages from github`
 

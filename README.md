@@ -54,7 +54,7 @@ G. Research question 4:
 
 ---
 
-## 1 Prerequisite steps
+## A Prerequisite steps
 
 make sure the following packages are installed:
 
@@ -71,4 +71,15 @@ install.packages("lme4")          # must be installed for the multi-level APIM
 install.packages("lmerTest")      # must be installed for the multi-level APIM
 install.packages("seqHMM")        # must be installed for Markov models
 ```
+
+Make sure to delete previous Versions of DySeq before installing a new version from GitHub!
+``` r
+remove.packages("DySeq")      # remove older Version von DySeq     
+install_github("PeFox/DySeq") # Install DySeq from GitHub
+```
+
+Alternatively, you can install `DySeq` from CRAN. However, the version on CRAN does not feature 
+the multi-level approach until the next release!
+
+
 

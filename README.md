@@ -11,7 +11,8 @@ published in --- still in review ---
 Please make sure to install all required packages,
 including the "Dyseq", which provides the sample data!
 
-Content                  
+
+__Content__                  
 
 * (A) Prerequisite Steps (A)                
    * packages from CRAN                   

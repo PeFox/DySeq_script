@@ -433,3 +433,52 @@ fit2<-fit_model(my_hmodel)
 
 fit2  # print the results
 ```
+
+---
+
+## Research question 4: Are there latent groups of dyads, which might account for observing different reaction patterns?
+
+This question can be answered by a mixture Markov model or by the OM-procedure. We start with the Markov model: 
+
+```r
+# his question can be answered by a mixture Markov model or by the OM-procedure 
+
+# Needs following objects:
+# couple.seq (created in the graphics section, using TraMineR-package)
+
+# Following packages needed:
+# seqHMM
+
+
+# First of all we have to specify starting values for the each chain
+# so we need as many chains as there a latent groups. For the sake of 
+# examplification we will assume two groups:
+
+# These are transition matrices for the observed states,
+# therefore they have the as many rows and columns as observed states:
+mytrans1<-matrix(c(.25), 4,4)
+mytrans2<-matrix(c(.25), 4,4)
+# Those transition matrices must be placed into a list, before
+# building the model
+mymixtrans<-list(mytrans1, mytrans2)
+
+# There are not emissions because there are no hidden states! 
+
+# However, we need to sets of starting values. One for each chain!
+myinit1<-c(.25, .25, .25, .25) 
+myinit2<-c(.25, .25, .25, .25) 
+# again both must be placed inside a list:
+mymixinit<-list(myinit1, myinit2)
+
+
+my_mmodel<-build_mmm(couple.seq, 
+                    mymixtrans,
+                    mymixinit)
+
+fit3<-fit_model(my_mmodel,                   
+                global_step=TRUE,     # additional arguments for the optimizier
+                local_step=TRUE,      # to avoid local maximum
+                control_em=list(restart = list(times=10)))
+
+fit3
+´´´

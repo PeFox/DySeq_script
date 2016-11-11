@@ -104,28 +104,6 @@ __Content__
     * step 1: state-transition tables
     * step 2: multiple logit-regressions
     * step 3: aggregating
-    * step 4: APIM
-  * Multi-Level-Approach
-    * converting sequences into MLM-data-structure
-    * applying MLM via lme4
-  * Basic Markov Modell
-    * converting data
-    * obtaining the transition matrix
-
-* (F) Research question 3:                 
-  * estimating hidden Markov model
-
-* (G) Research question 4:
-  * estimating mixture Markov model
-  * sequence clustering
-    * OM-distances
-    * clustering
-    * interpret clusters
-    
-* (H) Additional functions
-  * number of expected cell problems
-  * find number of needed time intervals
-  
 ---
 
 ## A Prerequisite steps

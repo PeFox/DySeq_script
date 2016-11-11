@@ -568,7 +568,7 @@ Screeplot: (Indicating 1 or 2 clusters)
 wss <- (nrow(dist.oml)-1)*sum(apply(mydata,2,var))
 for (i in 2:15) wss[i] <- sum(kmeans(mydata, centers=i)$withinss)
 plot(1:15, wss, type="b", xlab="Number of Clusters", ylab="Within groups sum of squares")
-```r
+```
 
 Dendrogramm: (Indicating 2, maybe 3, Clustersolution)
 ```r

@@ -182,7 +182,7 @@ plot(SC.sumscores, DC.sumscores, ylab="Number of DC", xlab="Number of SC")
 abline(lm(SC.sumscores~DC.sumscores))
 ```
 
-![alt text](https://github.com/PeFox/DySeq_script/blob/master/Correlation_plot.png "Scatterplot(SC,DC)")
+![alt text](https://github.com/PeFox/DySeq_script/blob/master/Scatter_plotDCSC.png "Scatterplot(SC,DC)")
 
 
 

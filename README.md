@@ -90,3 +90,49 @@ Each row represents one dyad, each of them containing two sequences. Dyads are 6
 couples. The females partners were stressed using the Trier Social Stress Test 
 (TSST; Kirschbaum, Pirke, Hellhammer, 1993). Directly after the stress induction, both partners joint again and the couple was left alone for eight minutes. During this period (a 'fake' waiting condition) the two partners were filmed for 8 minutes divided into 48 intervals of ten seconds length. It was coded if the female partners showed stress communication (SC) within an interval (sequence 1; Colums 50:97) and if the male partner showd dyadic coping reactions (DC; sequence 2; columns 2:49). For rurther insides about dyadic coping and/or stress communication, see Bodenmann (2015).
 
+```r
+library(DySeq)        # loading the DySeq Package
+mydata<-CouplesCope   # getting the data
+help(DySeq)           # get more information about the data set
+
+# Most following approaches will need combined states!
+# The function StateExpand can combine tow sequences into one!
+```r
+my.expand<-StateExpand(CouplesCope, 2:49, 50:97)
+```
+
+---
+# C. Graphical Analysis
+
+Following objects from the previous sections are needed:
+- mydata      (the example data)
+- my.expand   (the combined sequences)
+
+```r
+library(TraMineR)     # awesome package for sequence analysis in general!
+library(RColorBrewer) # more colours!
+
+# state-distribution plot (using TraMineR) 
+
+# create labels for plot
+couple.labels <-c("none",     # no reaction
+                  "SC only",  # only stress communication
+                  "DC only",  # only dyadic coping
+                  "SC+DC")    # stress and dyadic
+
+# create a stslist object (TraMineR S3-Class)
+couple.seq <- seqdef(my.expand,              # the combined states 
+                     labels = couple.labels) # the label
+
+# State-Distribution plot 
+seqdplot(couple.seq,
+         cex.legend=0.8) # adjust size of the legend
+
+# Alternatively a grey version (using RColorBrewer)
+# And legend aligned right
+attr(couple.seq , "cpal") <- brewer.pal(4, "Greys") # see figure 2
+seqdplot(couple.seq, cex.legend=0.8, withlegend="right")
+```
+
+
+

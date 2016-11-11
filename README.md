@@ -81,5 +81,12 @@ install_github("PeFox/DySeq") # Install DySeq from GitHub
 Alternatively, you can install `DySeq` from CRAN. However, the version on CRAN does not feature 
 the multi-level approach until the next release!
 
+---
 
+## B. Example data
+
+The data stems from a study, which was promoted as a study on close relationship and stress. 
+Each row represents one dyad, each of them containing two sequences. Dyads are 64 heterosexuel
+couples. The females partners were stressed using the Trier Social Stress Test 
+(TSST; Kirschbaum, Pirke, Hellhammer, 1993). Directly after the stress induction, both partners joint again and the couple was left alone for eight minutes. During this period (a 'fake' waiting condition) the two partners were filmed for 8 minutes divided into 48 intervals of ten seconds length. It was coded if the female partners showed stress communication (SC) within an interval (sequence 1; Colums 50:97) and if the male partner showd dyadic coping reactions (DC; sequence 2; columns 2:49). For rurther insides about dyadic coping and/or stress communication, see Bodenmann (2015).
 

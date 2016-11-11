@@ -312,7 +312,6 @@ my.logseq # estimates for actor- and partnereffect on coping
 
 
 
-
 # removing objects that are not necessary for the subsequent analyses
 rm(list=c("my.logseq", "my.logseq.stress")) 
 
@@ -610,6 +609,8 @@ cor.test(mydata$EDCm,clust2.dummy) # note: pearson correlation between a dichoto
 # LogSeq provides an optional argument "subgroups" that allows to compare 
 # transition tables for two groups 
 LogSeq(my.trans, delta=0.5, subgroups=cluster2) # Analysis for DC as dependend variable
+
+
 
 LogSeq(my.trans.stress, delta=0.5, subgroups=cluster2) # Analysis for SC as dependend variable 
                                                        # [note: not shown in the article]

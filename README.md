@@ -58,6 +58,7 @@ __Content__
           <li>converting data</li>
           <li>obtaining the transition matrix<br/><br/></li>
           </ul>
+      </ul>
       
   <li>Research question 3 </li>
           <ul>

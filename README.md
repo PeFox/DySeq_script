@@ -13,9 +13,9 @@ including the "Dyseq", which provides the sample data!
 
 Content                  
 
-A. Prerequisite Steps                
-  * packages from CRAN                   
-  * package from Github                  
+  A. Prerequisite Steps                
+    * packages from CRAN                   
+    * package from Github                  
 
 B. Example Data                      
   * loading the data                     

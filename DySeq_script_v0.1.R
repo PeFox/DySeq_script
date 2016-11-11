@@ -8,58 +8,71 @@
 
 # This R-script provides a hands-on-tutorial for all
 # analyses covered in 
+#
 # "Analyzing dyadic sequence data - research questions and implied statistical models"
 # by  --- blinded for reviewing ---
+# published in --- blinded --- 
+#
 # 
 # Please make sure to install all required packages,
 # including the "Dyseq" which provides the sample data!
 
-### Content                               Lines
+### Content
 
-## A.1 Prerequisite Steps                 28-55
-#  - packages from CRAN                   
-#  - package from Github                  
+### Prerequisite Steps
 
-## A.2 Example Data                       96-117
-#  - loading the data                     
-#  - details on data                      
-
-## A.3 Graphical Analysis                 123-170
-#  - state-distribution-plot              
-#  - entropy-plot                         
-#  - Number of transitions                
-
-## Research question 1:                   179-209
-#  (Pearson Correlation) 
- 
-## Research question 2:                   214-311
-#  (aggregated logit models)
-#  - step 1: state-transition tables
-#  - step 2: multiple logit-regressions
-#  - step 3: aggregating
-#  - further Analysis, APIM
-
-## Research question 3:                   324-422
-#  - Hazard, survival and cumhazard
-#  - cox-regression
-
-## Research question 4:                   436-614
-#  - OM-distances 
-#  - Number of clusters
-#  - Ward-Algorithm
-#  - Cluster interpretation &
-#    further analyses
-
-## additional DySeq functions:            628-661
-#  - needed number of time intervalls 
+# packages from CRAN
+# package from Github
+# Example Data
+# loading the data
+# details on data
 
 
+### Graphical Analysis
+
+# state-distribution-plot
+# entropy-plot
+# Number of transitions
 
 
+### Research question 1
 
-#############################
-##  1. prerequisite steps  ##
-#############################
+# Pearson Correlation
+
+
+### Research question 2:
+  
+## aggregated logit models
+# step 1: state-transition tables
+# step 2: multiple logit-regressions
+# step 3: aggregating
+# step 4: APIM
+
+
+## Multi-Level-Approach
+# converting sequences into MLM-data-structure
+# applying MLM via lme4
+# Basic Markov Modell
+# converting data
+# obtaining the transition matrix
+
+### Research question 3:
+  
+#  estimating hidden Markov model
+
+
+### Research question 4:
+  
+#  estimating mixture Markov model
+#  sequence clustering
+#  OM-distances
+#  clustering
+#  interpret clusters
+
+
+##########################
+##  Prerequisite steps  ##
+##########################
 
 ##  make sure the following packages are installed:
 
@@ -71,6 +84,8 @@
 # install.packages("fpc")           # must be installed for research question 4!
 # install.packages("cluster")       # must be installed for research question 4!
 # install.packages("devtools")      # must be installed for installing packages from github
+# install.packages("lme4")          # must be installed for the multi-level APIM
+# install.packages("lmerTest")      # must be installed for the multi-level APIM
 
 # loading packages!
 library(cluster)      # ward algorithm, opt. number of clusters
@@ -95,7 +110,7 @@ library(DySeq)                      # loading DySeq;
 #######################
 ##  2. Example data  ##
 #######################
-
+help(CouplesCope)
 data("CouplesCope")   # loading example data
 View(CouplesCope)     # Invoke data viewer for the example data
 
@@ -123,28 +138,37 @@ my.expand<-StateExpand(CouplesCope, 2:49, 50:97) # create combined sequences via
 ##  3. GRAPHICAL ANALYSIS  ##
 #############################
 
-## Objects from previous sections needed: 
+## Objects from previous sections are needed: 
 #  - mydata     
 #  - my.expand  
 
 
 # state-distribution plot (using TraMineR) 
+citation("TraMineR")       # please cite TraMineR if you use 
+citation("RColorBrewer")   # some of its functions!
 
-couple.labels <-c("time interval", "SC only", "DC only", "SC+DC")  # create labels for plot
-couple.seq <- seqdef(my.expand, labels = couple.labels) # create a sequence object (the way TraMineR represents sequences)
-seqdplot(couple.seq)
+# create labels for plot
+couple.labels <-c("none",     # no reaction
+                  "SC only",  # only stress communication
+                  "DC only",  # only dyadic coping
+                  "SC+DC")    # stress and dyadic
 
+# create a stslist object (TraMineR S3-Class)
+couple.seq <- seqdef(my.expand,              # the combined states 
+                     labels = couple.labels) # the label
+
+# State-Distribution plot 
+seqdplot(couple.seq,
+         cex.legend=0.8) # adjust size of the legend
 
 # Alternatively a grey version (using RColorBrewer)
-
+# And legend aligned right
 attr(couple.seq , "cpal") <- brewer.pal(4, "Greys") # see figure 2
 seqdplot(couple.seq, cex.legend=0.8, withlegend="right")
 
 
-# Figure 3 Entropy-plot and Histogramm of "Number of transitions"
+# Figure 3 Entropy-plot and histogramm of "Number of transitions"
 
-par (mfrow = c(1,2)) # preparing the graphic device to show two graphics in a row
-{
 # Entropy-plot: how much do states diverge within time intervals?
 Entropy <- seqstatd(couple.seq)$Entropy
 plot(Entropy, main= "Entropy", col="black", xlab = "Time in 10 sec. intervall", type ="l")
@@ -152,11 +176,10 @@ plot(Entropy, main= "Entropy", col="black", xlab = "Time in 10 sec. intervall", 
 # Histogramm of "Number of transitions": How often do couples change from one state into another
 SeqL<-seqtransn(couple.seq)
 hist(SeqL, main="Number of transitions", xlab="State-transitions")
-}
 
-par (mfrow = c(1,1)) # the graphic device is set back to showing only one graphik at a time. 
 
-summary(SeqL) # provides some describtives about the "Number of transitions"
+summary(SeqL) # more details on the "Number of transitions"
+
 
 # Note:
 cor(SeqL, mydata$EDCm) # the Number of transition can be investigated further.
@@ -177,8 +200,8 @@ rm(list=c("couple.labels", "Entropy")) # these two objects are not needed in the
 
 ###################################################################
 ###  Research question 1:                                       ###
-###  Is there an association between stress communication by    ###
-###  one partner and dyadic coping by the other partner?        ###
+###  Is there an association between a particular behavior by   ### 
+###  one and the reaction by the other partner?                 ###
 ###################################################################
 
 ## Objects from previous sections needed: 
@@ -187,8 +210,9 @@ rm(list=c("couple.labels", "Entropy")) # these two objects are not needed in the
 
 # Step 1: Computing the frequencies of both behaviors,
 # using the function NumbOccur from the DySeq-package
-stress.sumscores<-NumbOccur(mydata[,2:49], 1, prop=FALSE) 
+SC.sumscores<-NumbOccur(mydata[,2:49], 1, prop=FALSE) 
 DC.sumscores<-NumbOccur(mydata[,50:97], 1, prop=FALSE)    
+
 
 # Explanation:
 # Argument 1: Columns 2:49 are containing the stress reactions (SC), 50 to 97 the dyadic coping reactions (DC).

@@ -192,6 +192,7 @@ abline(lm(SC.sumscores~DC.sumscores))
 Following objects from the previous sections are needed:
 - mydata      (the example data)
 - my.expand   (the combined sequences)
+- couple.seq  (a a stslist object from TraMineR)
 
 Following Packages are needed:
 - DySeq
@@ -317,11 +318,12 @@ MLAP_data$Partner[MLAP_data$Partner==0]<-(-1)
 MLAP_data$Actor[MLAP_data$Actor==0]<-(-1)
 ```
 
+### Multi-level approach: Step 2 
 
-There are a vast and increasing number of packages in R, wich can run multi-level modells. However, lme4 became one of the best known packages for multi-level analysis, and an increasing number of tutorials are spreading through the net. Thus, we will stick to lme4, too. Do not forget to cite lme4 and lmerTest if you use this approach!
+The second stept is applying and testing MLM-models. There are a vast and increasing number of packages in R, wich can run multi-level modells. However, lme4 became one of the best known packages for multi-level analysis, and an increasing number of tutorials are spreading through the net. Thus, we will stick to lme4, too. Do not forget to cite lme4 and lmerTest if you use this approach!
 
 
-# The following shows the most complex modell, which is possible to estimate. There will be some estimation problems with this model, but it will serve as an example to explain the function's arguments. 
+The following shows the most complex modell, which is possible to estimate. There will be some estimation problems with this model, but it will serve as an example to explain the function's arguments. 
 ```r
 set.seed(1234)                                             # setting SEED for replication purposes!
 fit<-glmer(DV~1+sex+Actor+Partner+Actor*Partner+           # intercept, Actor, Partner and interaction effect for the referrence group
@@ -330,23 +332,69 @@ fit<-glmer(DV~1+sex+Actor+Partner+Actor*Partner+           # intercept, Actor, P
            sex*Actor+sex*Partner+sex*Actor*Partner|ID),    # Random effects for the differences between the DVs (SC vs. DV)
       data=MLAP_data,                                      # the actual data 
       family=binomial)                                     # provides Link-function, so logistig regression is applied!
-summary(fit)
-AIC(fit)
-BIC(fit)
+summary(fit)                                               # Provides summary of results
+AIC(fit)                                                   # Akaike information criterion (AIC; a comparative fit index)
+BIC(fit)                                                   # Bayesian information criterion (BIC; a more conservative fit index)
 ```
 
-# Models can be compared using AIC or BIC (comparative fit-indices). Smaller values indicate better model fit. In our case, a model containting random effects for the intercept, actor, partner and their interaction, were the best fitting. 
+Models can be compared using AIC or BIC (comparative fit-indices). Smaller values indicate better model fit. In our case, a model containting random effects for the intercept, actor, partner effects were the best fitting one. 
 
 ```r 
  # Random Actor und Partner Effekte
  set.seed(1234)
- fit<-glmer(DV~1+sex+Actor+Partner+Actor*Partner+
-         sex*Actor+sex*Partner+sex*Actor*Partner+
-         (1+Actor+Partner|ID),
-          data=MLAP_data,
-          family=binomial)
+
+fit<-glmer(DV~1+sex+Actor+Partner+Actor*Partner+
+        sex*Actor+sex*Partner+sex*Actor*Partner+
+        (1+Actor+Partner|ID),
+      data=MLAP_data,
+      family=binomial)
 summary(fit)
 AIC(fit)
 BIC(fit)
 ```
+
+ For a closer interpretation of this model, inspect the article (----). 
+ 
+ ---
+ 
+ 
+### Basic Markov model
+
+The TraMineR-package provides a function to fit a basic Markov model. The couple.seq object is needed, which was created in the 'graphic analysis' section!
+
+```r
+round(seqtrate(couple.seq),2) # the round command is optional, and rounds the transition matrix to two digits
+```
+
+The second way, using the seqHMM-package is a little bit more complicated at the first glance. However, its worth to try this package too, because hidden Markov and mixture Markov model follow the exact same logic. 
+
+```r
+
+# First of all, starting values for the transition matrix must be specified
+# each row must add up to one! In this case we assume that each transition is equally likely!
+# One of the advantages of seqHMM is, that restriction can be added (e.g. setting a value to zero
+# will set it zero).
+mytrans<-matrix(.25, 4,4)
+
+# Same for the initial probabilities
+myinit<-c(.25,.25,.25,.25)
+
+# Builds the acutal model
+mybuild<-build_mm(couple.seq,
+         mytrans,
+         myinit)
+
+# Fits the model on the data
+fit<-fit_model(mybuild)
+
+# print results
+fit
+
+# get comparative fit indices!
+AIC(fit$model)   # Akaike information criterion (AIC; a comparative fit index)
+BIC(fit$model)   # Bayesian information criterion (BIC; a more conservative fit index)
+
+---
+
+
 

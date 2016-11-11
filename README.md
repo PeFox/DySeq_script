@@ -14,6 +14,12 @@ including the "Dyseq", which provides the sample data!
 
 __Content__                  
 
+<ol type="a">
+  <li>Coffee</li>
+  <li>Tea</li>
+  <li>Milk</li>
+</ol>
+
 * (A) Prerequisite Steps (A)                
    * packages from CRAN                   
    * package from Github                  

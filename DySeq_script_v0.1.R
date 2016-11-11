@@ -250,7 +250,7 @@ my.trans[[41]] # inspecting couple 129 (rownumber 41)
                # therefore double-brackets are needed for subscripting!
 
 # Or, if relative frequencies are preferred: 
-my.trans[[41]]/sum(my.trans[[41]]) 
+round(my.trans[[41]]/sum(my.trans[[41]]),3) 
 
 
 

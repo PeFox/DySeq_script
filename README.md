@@ -16,17 +16,34 @@ __Content__
 
 <ol type="a">
   <li>Prerequisite Steps</li>
+      <ul>
+      <li>packages from CRAN</li>
+      <li>DySeq-package from Github oranges</li>
+      </ul>
   <li>Example Data</li>
+      <ul>
+      <li>loading the data</li>
+      <li>details on data </li>
+      </ul>
   <li>Graphical Analysis</li>
+      <ul>
+      <li>state-distribution plot</li>
+      <li>entropy plot </li>
+      <li>number of transitions</li>
+      </ul>  
   <li>Research question 1 </li>
-      <p>Bullet list:</p>
       <ul>
       <li>Pearson Correlation</li>
       </ul>
   <li>Research question 2 </li>
-        <p>Bullet list:</p>
       <ul>
-      <li>apples</li>
+      <li>aggregated logit models</li>
+          <ul>
+          <li>step 1: state-transition tables</li>
+          <li>step 2: multiple logit-regressions</li>
+          <li>step 3: aggregating</li>
+          <li>step 4: APIM</li>
+          </ul>
       <li>oranges</li>
       <li>pears</li>
       </ul>

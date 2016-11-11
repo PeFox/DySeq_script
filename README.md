@@ -20,33 +20,42 @@ __Content__
       <li>packages from CRAN</li>
       <li>DySeq-package from Github oranges</li>
       </ul>
+      
   <li>Example Data</li>
       <ul>
-      <li>loading the data</li>
-      <li>details on data </li>
+      <li>Loading the Data</li>
+      <li>Details on Data </li>
       </ul>
+      
   <li>Graphical Analysis</li>
       <ul>
-      <li>state-distribution plot</li>
-      <li>entropy plot </li>
-      <li>number of transitions</li>
+      <li>State-Distribution Plot</li>
+      <li>Entropy Plot </li>
+      <li>Number of Transitions</li>
       </ul>  
+      
   <li>Research question 1 </li>
       <ul>
       <li>Pearson Correlation</li>
       </ul>
-  <li>Research question 2 </li>
+      
+  <li>Research Question 2 </li>
       <ul>
-      <li>aggregated logit models</li>
+      <li>Aggregated Logit Models</li>
           <ul>
-          <li>step 1: state-transition tables</li>
-          <li>step 2: multiple logit-regressions</li>
-          <li>step 3: aggregating</li>
+          <li>step 1: State-Transition Tables</li>
+          <li>step 2: Multiple Logit-Regressions</li>
+          <li>step 3: Aggregating</li>
           <li>step 4: APIM</li>
           </ul>
-      <li>oranges</li>
+      <li>Multi-Level APIM</li>
+          <ul>
+          <li>Data praparation</li>
+          <li> Applying MLM via lme4</li>
+          </ul>
       <li>pears</li>
       </ul>
+      
   <li>Research question 3 </li>
   <li>Research question 4 </li>
   <li>Additional function </li>

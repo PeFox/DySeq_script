@@ -204,7 +204,7 @@ Following Packages are needed:
 ### Bakeman & Gottman approach: Step 1
 
 First step is transforming the sequences into transition tables.
-That can be done by DySeq's function StateTrans, whoch stores the transition tables in a list of the class 'state.trans'. 
+That can be done by DySeq's function StateTrans, which stores the transition tables in a list of the class 'state.trans'. 
 
 ```r
 my.trans<-StateTrans(my.expand,   # the combined sequences
@@ -223,4 +223,9 @@ my.trans[[1]] # inspects the first table!
 # If the original data.frame containes a ID-variable, the following can be used:
 ID<-mydata$code             # stores the ID-variable in the object ID
 my.trans[[which(ID==129)]]  # inspects the dyad with ID=129
+
+# If relative frequencies are preferred for single case analysis, just divide the transition table by its sum.
+# The following shows an example for the 41th transition table, which belongs to the couple with ID 129. 
+# round(x,3) rounds the frequencies to three digits
+round(my.trans[[41]]/sum(my.trans[[41]],3)
 ```

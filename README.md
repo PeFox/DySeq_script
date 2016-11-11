@@ -632,7 +632,7 @@ LogSeq(my.trans.SC, delta=0.5, subgroups=cluster2)  # Comparim aggregated logit 
   * number of expected cell problems
   * find number of needed time intervals
   
-### number of expected cell problems:
+### Number of Expected Cell Problems:
 1. define a matrix containing the expected transition rates
 2. run EstFreq
 3. print the results
@@ -646,7 +646,7 @@ my.cellproblems<-EstFreq(my.trans.table, t=100, min.cell=5, k=20000)
 my.cellproblems
 ``` 
 
-### find number of needed time intervals:
+### Number of Needed Time Intervals:
 ```r
 my.EstTime.plot<-EstTime(my.trans.table,   # contains expected transition probabilities (from the last section)
                          t=50:100,         # limits the range of time intervals, which are testet.  

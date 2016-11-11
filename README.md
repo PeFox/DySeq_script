@@ -278,3 +278,75 @@ my.logseq.SC # Contains actor and partner effects for the female
 ```     
 
 Our previous results from step 3 contained the effects for men, while our second results (my.logseq.SC) contain the effects for women. Thus, combining both results in a APIM as shown in the article. 
+
+---
+
+
+### Multi-level approach: Step 1
+
+The first step is data preparation. First each transition must be recoded to be a single observation within a nested data structure. Transitions are level-1 observations, which are nested within dyads. That can be achieved by one single function from the DySeq-Package!
+
+```r
+library("lme4")      # Make sure all needed packages are loaded!
+library("lmerTest")
+
+# ML_Trans transforms dyadic sequences into multi-level data!
+ML_data<-ML_Trans(data=CouplesCope,     # The data, which should be used!
+                        first=2:49,     # The sequence, which should be used as the DV
+                        second=50:97)   # The sequence, which serves as the IV!
+```
+
+If the data should be used to apply a multi-level APIM, transitions must be recoded first into lagged actor and lagged partner effects. The function MLAP_Trans does so. 
+
+```r
+ MLAP_data<-MLAP_Trans(ML_data) # ML_data must be the output of ML_Trans!
+```
+
+Labels should be added or else the procedure can become confusing later on. 
+
+```r
+names(MLAP_data)[1]<-"sex"
+MLAP_data$sex<-as.factor(MLAP_data$sex)
+levels(MLAP_data$sex)<-c("female", "male")
+```    
+
+MLAP_Trans uses dummy-coding per default. However, for the purposes of an APIM effect-coding is better, because it is easier to interpret. Furthermore, effect coding was also used in the article (-----). So for the sake of comparable results, we will stick to it for this case.  
+
+```r
+MLAP_data$Partner[MLAP_data$Partner==0]<-(-1)
+MLAP_data$Actor[MLAP_data$Actor==0]<-(-1)
+```
+
+
+There are a vast and increasing number of packages in R, wich can run multi-level modells. However, lme4 became one of the best known packages for multi-level analysis, and an increasing number of tutorials are spreading through the net. Thus, we will stick to lme4, too. Do not forget to cite lme4 and lmerTest if you use this approach!
+
+
+# The following shows the most complex modell, which is possible to estimate. There will be some estimation problems with this model, but it will serve as an example to explain the function's arguments. 
+```r
+set.seed(1234)                                             # setting SEED for replication purposes!
+fit<-glmer(DV~1+sex+Actor+Partner+Actor*Partner+           # intercept, Actor, Partner and interaction effect for the referrence group
+        sex*Actor+sex*Partner+sex*Actor*Partner+           # difference for the non-referrence group (here males/DC)
+        (1+sex+Actor+Partner+Actor*Partner+                # Random effects for intercept, Actor, Partner and interaction effect
+           sex*Actor+sex*Partner+sex*Actor*Partner|ID),    # Random effects for the differences between the DVs (SC vs. DV)
+      data=MLAP_data,                                      # the actual data 
+      family=binomial)                                     # provides Link-function, so logistig regression is applied!
+summary(fit)
+AIC(fit)
+BIC(fit)
+```
+
+# Models can be compared using AIC or BIC (comparative fit-indices). Smaller values indicate better model fit. In our case, a model containting random effects for the intercept, actor, partner and their interaction, were the best fitting. 
+
+```r 
+ # Random Actor und Partner Effekte
+ set.seed(1234)
+ fit<-glmer(DV~1+sex+Actor+Partner+Actor*Partner+
+         sex*Actor+sex*Partner+sex*Actor*Partner+
+         (1+Actor+Partner|ID),
+          data=MLAP_data,
+          family=binomial)
+summary(fit)
+AIC(fit)
+BIC(fit)
+```
+

@@ -366,7 +366,7 @@ The TraMineR-package provides a function to fit a basic Markov model. The couple
 round(seqtrate(couple.seq),2) # the round command is optional, and rounds the transition matrix to two digits
 ```
 
-The second way, using the seqHMM-package is a little bit more complicated at the first glance. However, its worth to try this package too, because hidden Markov and mixture Markov model follow the exact same logic. 
+The second way, using the seqHMM-package is a little bit more complicated at the first glance. However, its worth to try this package too, because hidden Markov and mixture Markov model follow the exact same logic. Please cite seqHMM if you are using it for your analysis!
 
 ```r
 
@@ -393,8 +393,43 @@ fit
 # get comparative fit indices!
 AIC(fit$model)   # Akaike information criterion (AIC; a comparative fit index)
 BIC(fit$model)   # Bayesian information criterion (BIC; a more conservative fit index)
+```
 
 ---
 
+## Research Question 3: Is there an underlying dyadic process, which might account for the observed behavior?             
+
+Needs following objects:
+couple.seq (created in the graphics section, using TraMineR-package)
+
+Following packages needed:
+seqHMM
 
 
+
+This question can be answered by a hidden Markov model using seqHMM. Please cite seqHMM if you are using it for your analysis! 
+First we have to specify starting values for the hidden chain by doing so, we also decide on the number of latent states!
+
+```r
+myhtrans<-matrix(c(.50, 0, 0.5, 1), 2,2)
+# In this example we created a 2*2 matrix, the second 
+# state is an absorbing one, because we resticted the transition
+# probabilities in a way that one cannot leave the second state!
+           
+my_emission<-matrix(c(.25),2,4)
+# the emission matrix has one row per latent state
+# and four columns for eacht observed state
+
+myinit2<-c(.50, .50) 
+# Because the hidden chain is now a 2*2 matirx, we only need two
+# initial probabilities
+
+my_hmodel<-build_hmm(couple.seq,
+                       myhtrans,
+                    my_emission,
+                        myinit2)
+
+fit2<-fit_model(my_hmodel)
+
+fit2  # print the results
+```

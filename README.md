@@ -229,3 +229,32 @@ my.trans[[which(ID==129)]]  # inspects the dyad with ID=129
 # round(x,3) rounds the frequencies to three digits
 round(my.trans[[41]]/sum(my.trans[[41]],3)
 ```
+
+### Bakeman & Gottman approach: Step 2 
+
+Second step is computing a logit model for each dyad. That is a very cumbersome procedure, yet the Package DySeq provides the function LogSeq for doing so with only one function!
+
+```r
+my.logseq<-LogSeq(my.trans,         # a list containing transition plots (from step 1)
+                 delta=0.5,         # adds a frequency of .5 on every cell. Needed if zero cells exist!
+                 single.case=TRUE)  # if TRUE, stores single case results (and the function becomes slower)
+```
+
+If a researcher is interested in single case analysis, the function single.LogSeq() can be used to obtain these in a ready-to-interpret table! p-value test whether betas are different from zero. Note that the p-value for the intercept is not implemented yet! 
+
+```r
+# Single case analsis for transition plot 41 (aka couple 129)
+single.LogSeq(my.logseq, 41)
+```
+
+
+### Bakeman & Gottman approach: Step 3
+
+Next step is aggregating the results. This is automatically done by printing the results of the last step! 
+No further functions are needed! Again, p-values test whether the betas are not equal zero. 
+
+```
+my.logseq  # prints the aggrregated results!
+´´´
+
+Plotting the results will give an interaction-plot. Mapping the probabilities 

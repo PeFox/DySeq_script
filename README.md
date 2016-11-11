@@ -108,12 +108,22 @@ Following objects from the previous sections are needed:
 - mydata      (the example data)
 - my.expand   (the combined sequences)
 
+Following Packages are needed:
+- DySeq
+- TraMineR
+- RColorBrewer
+
 ```r
 library(TraMineR)     # awesome package for sequence analysis in general!
 library(RColorBrewer) # more colours!
+citation("TraMineR") # please cite Packages if you use them!
+citation("RColorBrewer")
+```
 
-# state-distribution plot (using TraMineR) 
+### The state distribution plot 
 
+
+```r
 # create labels for plot
 couple.labels <-c("none",     # no reaction
                   "SC only",  # only stress communication
@@ -133,6 +143,45 @@ seqdplot(couple.seq,
 attr(couple.seq , "cpal") <- brewer.pal(4, "Greys") # see figure 2
 seqdplot(couple.seq, cex.legend=0.8, withlegend="right")
 ```
+
+### Entropy plot
+```r
+Entropy <- seqstatd(couple.seq)$Entropy
+plot(Entropy, main= "Entropy", col="black", xlab = "Time in 10 sec. intervall", type ="l")
+```
+
+### Histogramm of transitions number
+```r
+SeqL<-seqtransn(couple.seq)
+hist(SeqL, main="Number of transitions", xlab="State-transitions")
+```
+
+---
+
+## D. Research Question 1: Is there an association between a particular behavior by one and the reaction by the other partner?
+
+Following objects from the previous sections are needed:
+- mydata      (the example data)
+
+Following Packages are needed:
+- DySeq
+
+```r
+# NumbOccur counts how often a certain behavior is shown within each sequence
+SCstress.sumscores<-NumbOccur(x=mydata[,2:49],           # col: 2:49 represent stress communication (SC)
+                                          y=1,           # 0=no SC; 1=SC was shown 
+                                          prop=FALSE)    # absolute (TRUE) or relative (FALSE) frequency?
+                                        
+DC.sumscores<-NumbOccur(mydata[,50:97], 1, prop=FALSE)  # Same for dyadic coping (DC)
+
+# Correlation of both frequencies
+cor.test(SC.sumscores, DC.sumscores)
+
+# plotting the correlation
+plot(SC.sumscores, DC.sumscores, ylab="Number of DC", xlab="Number of SC")
+abline(lm(SC.sumscores~DC.sumscores))
+```
+
 
 
 

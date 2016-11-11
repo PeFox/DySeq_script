@@ -253,8 +253,10 @@ single.LogSeq(my.logseq, 41)
 Next step is aggregating the results. This is automatically done by printing the results of the last step! 
 No further functions are needed! Again, p-values test whether the betas are not equal zero. 
 
-```
+```r
 my.logseq  # prints the aggrregated results!
-´´´
+```
 
-Plotting the results will give an interaction-plot. Mapping the probabilities 
+Plotting the results will produce an interaction-plot. Mapping the probabilities of showing the dependend variable against the combinations of previous behavior.  
+
+![alt text](https://github.com/PeFox/DySeq_script/blob/master/Interac.png "Scatterplot(SC,DC)")

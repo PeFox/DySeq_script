@@ -15,9 +15,24 @@ including the "Dyseq", which provides the sample data!
 __Content__                  
 
 <ol type="a">
-  <li>Coffee</li>
-  <li>Tea</li>
-  <li>Milk</li>
+  <li>Prerequisite Steps</li>
+  <li>Example Data</li>
+  <li>Graphical Analysis</li>
+  <li>Research question 1 </li>
+      <p>Bullet list:</p>
+      <ul>
+      <li>Pearson Correlation</li>
+      </ul>
+  <li>Research question 2 </li>
+        <p>Bullet list:</p>
+      <ul>
+      <li>apples</li>
+      <li>oranges</li>
+      <li>pears</li>
+      </ul>
+  <li>Research question 3 </li>
+  <li>Research question 4 </li>
+  <li>Additional function </li>
 </ol>
 
 * (A) Prerequisite Steps (A)                
@@ -33,10 +48,10 @@ __Content__
   * entropy-plot                         
   * Number of transitions                
 
-* (D) Research question 
+* (D) Research question 1:
   * Pearson Correlation 
  
-* (E) Research question 1:                   
+* (E) Research question 2:                   
   * aggregated logit models
     * step 1: state-transition tables
     * step 2: multiple logit-regressions

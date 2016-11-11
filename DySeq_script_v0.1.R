@@ -17,58 +17,57 @@
 # Please make sure to install all required packages,
 # including the "Dyseq" which provides the sample data!
 
-### Content
 
-### Prerequisite Steps
+### Content                                       #lines
 
+### Prerequisite Steps                             76
 # packages from CRAN
 # package from Github
-# Example Data
+
+### Example Data                                  114
 # loading the data
 # details on data
 
 
-### Graphical Analysis
-
+### Graphical Analysis                            137
 # state-distribution-plot
 # entropy-plot
 # Number of transitions
 
 
-### Research question 1
-
+### Research question 1                           197
 # Pearson Correlation
 
 
-### Research question 2:
-  
-## aggregated logit models
+### Research question 2:                          233
+
+## aggregated logit models                        246
 # step 1: state-transition tables
 # step 2: multiple logit-regressions
 # step 3: aggregating
 # step 4: APIM
 
-
-## Multi-Level-Approach
+## Multi-Level-Approach                           341
 # converting sequences into MLM-data-structure
 # applying MLM via lme4
 
-# Basic Markov Modell
+## Basic Markov Modell                            428
 # converting data
 # obtaining the transition matrix
 
-### Research question 3:
-  
+
+### Research question 3:                          449
 #  estimating hidden Markov model
 
 
-### Research question 4:
+### Research question 4:                          594
   
-#  estimating mixture Markov model
-#  sequence clustering
-#  OM-distances
-#  clustering
-#  interpret clusters
+##  estimating mixture Markov model               604
+
+##  Sequence clustering                           547
+#   OM-distances
+#   clustering
+#   display clusters
 
 
 ##########################
@@ -194,10 +193,6 @@ rm(list=c("couple.labels", "Entropy")) # these two objects are not needed in the
 
 
 
-#######################################
-##  4. potential research questions  ##
-#######################################
-
 
 ###################################################################
 ###  Research question 1:                                       ###
@@ -246,6 +241,7 @@ rm(list=c("DC.sumscores", "stress.sumscores")) # these two objects are not neede
 ## Objects from previous sections needed: 
 #  - mydata     
 #  - my.expand  
+#  - couple.seq (a a stslist object from TraMineR, created in line 156)
 
 
 ##############################################
@@ -321,17 +317,16 @@ my.logseq # [Note: see table 3 in the article]
 plot(my.logseq)
 
 
-
-############################
-#  Further analysis: APIM  #
-############################
+##################
+#  Step 4: APIM  #
+##################
 
 # Rerun the procedure with stress as dependend variable!
 
-my.trans.stress<-StateTrans(my.expand, TRUE) # This time TRUE means: First Sequence (Stress reaction) will be used as dependend variable!
-my.logseq.stress<-LogSeq(my.trans.stress, delta=0.5)
+my.trans.SC<-StateTrans(my.expand, TRUE) # This time TRUE means: First Sequence (Stress reaction) will be used as dependend variable!
+my.logseq.SC<-LogSeq(my.trans.SC, delta=0.5)
 
-my.logseq.stress # estimates for actor- and partnereffect on stress
+my.logseq.SC # estimates for actor- and partnereffect on stress
 my.logseq # estimates for actor- and partnereffect on coping
 # (see fig. 4)
 
@@ -343,118 +338,159 @@ rm(list=c("my.logseq", "my.logseq.stress"))
 
 
 
+##########################
+##########################
+## Multi-Level Approach ##
+##########################
+##########################
 
-###############################################################
-###  Research Question 3:                                   ###
-###  What is the typical duration of stress communication?  ###
-###  And does it depend on covariates, for instances men’s  ###
-###  self-assessed dyadic coping ability?                   ###
-###############################################################
+# Make sure all needed packages are loaded!
+#library("lme4")
+#library("lmerTest")
 
-
-## Objects from previous sections needed: 
-#  - mydata     
-
-
-# Calculating the last occurance of stress communication (last.stress)
-
-last.stress<-LastOccur(mydata[,2:49],y=1)
-# mydata[,2:49] accesses only the SC-sequences of mydata
-# second Argument y specifies if the last observed '0' or '1' should be optained
-# Note: other values for y are possible, but most other functions 
-#       of the DySeq-package will only support dichotomous sequences.
+# ML_Trans transforms dyadic sequences into multi-level data!
+ ML_data<-ML_Trans(data=CouplesCope,     # The data, which should be used!
+                   first=2:49,           # The sequence, which should be used as the DV
+                   second=50:97)         # The sequence, which serves as the IV!
 
 
 
-####################################
-#  Hazard, survival and cumhazard  #
-####################################
+ # transitions must be recoded first into lagged actor and lagged partner effects. 
+ MLAP_data<-MLAP_Trans(ML_data) 
+ 
 
-# First a variable is needed that indicates if the event was shown (1; observed) or not (0; censored)
-event<-c(rep(1, length(last.stress))) # it is shown for every case!
-event[last.stress>=48]<-0 # exept the ones that show stress communication till time intervall 48
-
-# the mean of the new vector "event" equals the relative frequency of couples in which the 
-# event occored. One minus that frequency equals the relative frequency of censored cases.
-1-mean(event)
-
-# The duration and the event variable are combined in a Surv-object
-stress.surv<-Surv(last.stress,event) 
-
-fit1 <- coxph(stress.surv~1, ties="breslow") # ~1 means: fittet without a covariate.
-                                             # Different estimators exist for handling 
-                                             # multiple events within one time-interval 
-                                             # in the article "breslow" was shown
-
-
-par (mfrow = c(1,3)) # Preparing R's graphic device for three graphics
-
-
-# Survival and cumhazard are already contained in the object "fit1"!
-plot(survfit(fit1), conf.int="none", xlab="Time", ylab="Survival Probability", xlim=c(0,48))
-
-# Note: if you want to inspect the survival tabled against the points of time
-# run:  data.frame(survfit(fit1)$surv,survfit(fit1)$time)
-
-
-# Note: if Median Lifetime should be added,
-# run the following 9 lines
-# x <- 45
-# y<-seq(0, 0.5, by=0.01)
-# x<-rep(x,length(y)) 
-# lines(x,y, lty=2)
-# x<-seq(0, 45, by=0.1)
-# y<-rep(0.5, length(x))
-# lines(x,y, lty=2)
-# x<-locator(1) # After this lines, click on the point within the Graphik where the ML-Label should be displayed
-# text(x$x, x$y, "ML", cex=1.2)
-
-
-plot(survfit(fit1), conf.int="none", xlab="Time", ylab="cumulated hazard", fun="cumhaz")
-
-# the DySeq package provides a function to compute the non-cumulated hazard:
-NonCumHaz(survfit(fit1), plot=T) # Figure 5
-
-
-# set the graphics device back at displaying one plot at a time
-par (mfrow = c(1,1)) 
-
-
-
-
-#################################################################
-##  Cox-regression: Prediction of hazard-ratio by a covariate  ##
-#################################################################
-
-
-# mean-centering EDCm  (men’s self-assessed dyadic coping ability)
-EDCm.cent<-scale(mydata$EDCm, TRUE, FALSE)
-
-# Fit the coxregression with EDCm.cent used as covariate
-fit2 <- coxph(stress.surv~EDCm.cent, ties="breslow") # ~cent means: the hazard-ratio should be predicted by EDCm.cent
-summary(fit2)
-exp.b<-unclass(summary(fit2))$coefficients[2]
-
-
-# Plotting the Coxregression with simple effects [note: not shown in the article]
-# run:
-# plot(survfit(fit2)$time, NonCumHaz(survfit(fit2)), xlim=c(19,45), ylim=c(0,0.3), type="l", xlab="Time", ylab="predicted hazard")
-# lines(survfit(fit2)$time, NonCumHaz(survfit(fit2))*exp.b^sd(EDCm.cent), lty=4)
-# lines(survfit(fit2)$time, NonCumHaz(survfit(fit2))*exp.b^-sd(EDCm.cent), lty=2)
-# 
-# x<-locator(1) # click into the graphics device to choose the location of the legend
-# legend(x$x, x$y, c("X = 0", "X = +1sd", "X = -1sd"), lty=c(1,4,2), cex=0.7 )
+ # Inspect the data:
+ # View(MLAP_data)
+ 
+ 
+# Adding labels:
+# In example data first seq referred to females
+# and second to males
+names(MLAP_data)[1]<-"sex"
+MLAP_data$sex<-as.factor(MLAP_data$sex)
+levels(MLAP_data$sex)<-c("female", "male")
+ 
+# Adding effect-coding
+MLAP_data$Partner[MLAP_data$Partner==0]<-(-1)
+MLAP_data$Actor[MLAP_data$Actor==0]<-(-1)
+ 
+ 
+### Full Random Model
+# Warning: Estimation can take a long time!
+set.seed(1234)
+glmer(DV~1+sex+Actor+Partner+Actor*Partner+
+       sex*Actor+sex*Partner+sex*Actor*Partner+
+       (1+sex+Actor+Partner+Actor*Partner+
+       sex*Actor+sex*Partner+sex*Actor*Partner|ID),
+       data=MLAP_data,
+       family=binomial)
+#AIC 5256.744
+#BIC 5551.640
+ 
+# The most simple MLM (Random intercept only)
+set.seed(1234)
+glmer(DV~1+sex+Actor+Partner+Actor*Partner+
+       sex*Actor+sex*Partner+sex*Actor*Partner+
+       (1|ID),
+       data=MLAP_data,
+       family=binomial)
+# AIC 5299.386  
+# BIC 5359.706
+ 
+ 
+### The Model from the article (----)
+ 
+# Random Actor und Partner Effekte
+set.seed(1234)
+fit<-glmer(DV~1+sex+Actor+Partner+Actor*Partner+
+          sex*Actor+sex*Partner+sex*Actor*Partner+
+          (1+Actor+Partner|ID),
+          data=MLAP_data,
+          family=binomial)
+summary(fit)
+AIC(fit)
+BIC(fit)
+# AIC 5222.063
+# BIC 5315.893
+ 
+# See Article for a close interpretation of the
+# last model. 
+ 
 
 
 
-# removing objects that are not necessary for the subsequent analyses
-rm(list=c("event", "fit1", "fit2", "last.stress", "exp.b", "EDCm.cent")) 
+##########################
+##########################
+## Basic Markov Model   ##
+##########################
+##########################
+
+# First possibility 
+round(seqtrate(couple.seq),2)
+
+# Second possibility: Use seqHMM
+# The second way, using the seqHMM-package is a little bit more complicated
+# at the first glance. However, its worth to try this package too, 
+# because hidden Markov and mixture Markov model follow the exact same logic.
+# Please cite seqHMM if you are using it for your analysis!
+citation("seqHMM")  
+
+
+# starting values for transition probabilities
+mytrans<-matrix(.25, 4,4)
+
+# starting values for the initial probabilities
+myinit<-c(.25,.25,.25,.25)
+
+mybuild<-build_mm(couple.seq,
+         mytrans,
+         myinit)
+
+fit<-fit_model(mybuild)
+
+BIC(fit$model)
+AIC(fit$model)
+ 
+
+##################################################################
+## Research Question 3: Is there an underlying dyadic process,  ##
+## which might account for the observed behavior?               ##
+##################################################################
+
+# Needs following objects:
+# couple.seq (created in the graphics section, using TraMineR-package)
+
+# Following packages needed:
+# seqHMM
 
 
 
+# This question can be answered by a hidden Markov model. 
 
+# first we have to specify starting values for the hidden chain
+# by doing so, we also decide on the number of latent states!
 
+myhtrans<-matrix(c(.50, 0, 0.5, 1), 2,2)
+# In this example we created a 2*2 matrix, the second 
+# state is an absorbing one, because we resticted the transition
+# probabilities in a way that one cannot leave the second state!
+           
+my_emission<-matrix(c(.25),2,4)
+# the emission matrix has one row per latent state
+# and four columns for eacht observed state
 
+myinit2<-c(.50, .50) 
+# Because the hidden chain is now a 2*2 matirx, we only need two
+# initial probabilities
+
+my_hmodel<-build_hmm(couple.seq,
+                       myhtrans,
+                    my_emission,
+                        myinit2)
+
+fit2<-fit_model(my_hmodel)
+
+fit2
 
 ##################################################################
 ###  Research Question 4:                                      ###
@@ -463,13 +499,61 @@ rm(list=c("event", "fit1", "fit2", "last.stress", "exp.b", "EDCm.cent"))
 ##################################################################
 
 
+# his question can be answered by a mixture Markov model or by the OM-procedure 
+
+# Needs following objects:
+# couple.seq (created in the graphics section, using TraMineR-package)
+
+# Following packages needed:
+# seqHMM
+
+
+# First of all we have to specify starting values for the each chain
+# so we need as many chains as there a latent groups. For the sake of 
+# examplification we will assume two groups:
+
+# These are transition matrices for the observed states,
+# therefore they have the as many rows and columns as observed states:
+mytrans1<-matrix(c(.25), 4,4)
+mytrans2<-matrix(c(.25), 4,4)
+# Those transition matrices must be placed into a list, before
+# building the model
+mymixtrans<-list(mytrans1, mytrans2)
+
+# There are not emissions because there are no hidden states! 
+
+# However, we need to sets of starting values. One for each chain!
+myinit1<-c(.25, .25, .25, .25) 
+myinit2<-c(.25, .25, .25, .25) 
+# again both must be placed inside a list:
+mymixinit<-list(myinit1, myinit2)
+
+
+my_mmodel<-build_mmm(couple.seq, 
+                    mymixtrans,
+                    mymixinit)
+
+fit3<-fit_model(my_mmodel,                   
+                global_step=TRUE,     # additional arguments for the optimizier
+                local_step=TRUE,      # to avoid local maximum
+                control_em=list(restart = list(times=10)))
+
+fit3
+
+
+
+
+##################
+## OM-procedure ##
+##################
+
 ## Objects from previous sections needed: 
 #  - mydata     
 #  - my.expand  
 #  - couple.seq (see line 131)
 #  - SeqL (see line 150)
 #  - my.trans (see line 217)
-#  - my.trans.stress(see line 293)
+#  - my.trans.SC(see line 293)
 
 
 # Introductionary: 
@@ -485,42 +569,16 @@ summary(SeqL) # Many couples change their behaviors from time
 ####################
 
 
-# Two sequences differ to the extent to which some elements of one sequence 
-# have to be changed in order to perfectly match the other sequence (cost) 
-# Insertion and deletion costs 1 (by default)
-# Substitution depends on the substitution-cost-matrix 
-# (Substitution-cost-matrix is derived by Gabadinho's TRATE-Formula)
+# Substitution-cost-matrix is derived by Gabadinho's TRATE-Formula
 submat <- seqsubm(couple.seq, method = "TRATE")
-
-
-# The TRATE-Formula uses the transition probabilities
-# to determine the substitution-cost-matrix (table 6 in the accompanying article)
-round(seqtrate(couple.seq),2) # or the transition probabilities
-                              # the round() funciton is optional!
-
-# Inspecting the substitution-cost-matrix (table 7 in the article)
-round(submat,2) # the round() funciton is optional!
-# state 0 == No SC/DC
-# state 1 == SC
-# state 2 == DC
-# state 3 == SC+DC
 
 # The substitution-cost-matrix is then used to calculate the distance-matrix
 dist.oml <- seqdist(couple.seq, method = "OM", sm = submat)
-
-# The results are stored in a distances matrix, here: "dist.oml"
-# with as many rows and columns as number of observations
-# cells representing the minimal cost between the associated observation units
-# The dissimilarity matrix corresponds to other distance measures, 
-# in an ordinary cluster analysis; 
-# therefore ordinary clustering algorithms can be apllied. 
-
 
 
 ############################################ 
 ##  Determine optimal Number of clusters  ##
 ############################################
-
 
 # First of all, the optimal number of clusters needs to be determined: 
 plot(pam(dist.oml, pamk(dist.oml)$nc), which.plot=1)
@@ -603,18 +661,14 @@ cluster2fac <- factor (cluster2, labels = c("cluster 1; fast coper", "cluster 2;
 
 
 
-#####################################################
-###  Cluster interpretation and further analyses  ###
-#####################################################
+#################################################
+###  comparing clusters and further analyses  ###
+#################################################
 
 
 ## separate state-distribution plots 
-#  [note: figure 6 in the accompanying article]
 seqdplot (couple.seq, group = cluster2fac) 
 
-## coxregression with subgroups
-fit3 <- coxph(stress.surv~mydata$EDCm+cluster2fac)
-summary(fit3)
 
 ## correlation between the cluster membership 
 #  and men’s self-assessed dyadic coping ability 
@@ -637,7 +691,7 @@ LogSeq(my.trans, delta=0.5, subgroups=cluster2) # Analysis for DC as dependend v
 
 
 
-LogSeq(my.trans.stress, delta=0.5, subgroups=cluster2) # Analysis for SC as dependend variable 
+LogSeq(my.trans.SC, delta=0.5, subgroups=cluster2) # Analysis for SC as dependend variable 
                                                        # [note: not shown in the article]
 
 
@@ -658,7 +712,7 @@ rm(list=c("dist.oml", "SeqL", "submat", "clust2.dummy",
 ###  of expected zero and low frequencies cells             ###
 ###############################################################
 
-# First step: Define a matrinx conatining the expected transition rates!
+# First step: Define a matrix containing the expected transition rates!
 my.trans.table<-matrix(c(0.57, 0.13, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05),4,2)
 
 # Run EstFreq: t is number of timeintervall, min.cell defines what counts as low frequencies 

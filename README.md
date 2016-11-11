@@ -51,7 +51,11 @@ G. Research question 4:
     * OM-distances
     * clustering
     * interpret clusters
-
+    
+H. Additional functions
+  * expected transition rates
+  * number of expected cell problems
+  * find number of needed time intervals
 ---
 
 ## A Prerequisite steps
@@ -500,22 +504,7 @@ Packages needes:
 - TraMineR
 
 
-##################
-## OM-procedure ##
-##################
-
-## Objects from previous sections needed: 
-#  - mydata     
-#  - my.expand  
-#  - couple.seq (see line 131)
-#  - SeqL (see line 150)
-#  - my.trans (see line 217)
-#  - my.trans.SC(see line 293)
-
-
-
-
-###  OM-Distances   
+###  Distances   
 
 Substitution-cost-matrix is derived by Gabadinho's TRATE-Formula
 ```r
@@ -573,4 +562,75 @@ plot(1:15, wss, type="b", xlab="Number of Clusters", ylab="Within groups sum of 
 Dendrogramm: (Indicating 2, maybe 3, Clustersolution)
 ```r
 plot(agnes (dist.oml, diss=TRUE, method = "ward"), which.plots=2)
+```
+
+### Ward-algorithm
+
+After determing the number of clusters, the ward-algorithm can be used for clustering. 
+
+```r
+clusterward1 <- agnes (dist.oml, diss=TRUE, method = "ward") # the algorithm 
+cluster2 <- cutree (clusterward1, k=2)                       # saving the two-cluster solution
+
+# adding labels
+cluster2fac <- factor (cluster2, labels = c("cluster 1; fast coper", "cluster 2; slow coper"))
+```
+
+Note that the number of observational units of both clusters doesn't match exactly the n from the silhuette test! 
+This is because the latter depends on another algorithm. Typically they provide the same cluster solutions. However, in this case one sequence was assgigned differently. The first plot from line 478 shows that exactly one sequence is located in the overlapping area
+between both clusters. Because of that, some algorithms assign it to the fist, other to the second cluster. However, changing its cluster - or deleting that observation - would not lead to other results. 
+
+### Comparing the clusters
+
+State-distribution plot for both clusters:
+```r
+seqdplot (couple.seq, group = cluster2fac)
+```
+
+Correlation between the cluster membership and men’s self-assessed dyadic coping ability 
+```r
+clust2.dummy<-as.numeric(cluster2fac) 
+clust2.dummy[clust2.dummy==1]<-0      
+clust2.dummy[clust2.dummy==2]<-1
+cor.test(mydata$EDCm,clust2.dummy) 
+```
+
+LogSeq from the DySeq-Package provides an optional argument "subgroups" that allows to compare transition tables for two groups. 
+```r
+LogSeq(my.trans, delta=0.5, subgroups=cluster2)     # Comparim aggregated logit models between clusters with DC as DV 
+LogSeq(my.trans.SC, delta=0.5, subgroups=cluster2)  # Comparim aggregated logit models between clusters with SC as DV 
+```
+
+
+## Additional functions
+  * number of expected cell problems
+  * find number of needed time intervals
+  
+### number of expected cell problems:
+1. define a matrix containing the expected transition rates
+2. run EstFreq
+3. print the results
+
+```r
+# First step:
+my.trans.table<-matrix(c(0.57, 0.13, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05),4,2)
+# Second step:
+my.cellproblems<-EstFreq(my.trans.table, t=100, min.cell=5, k=20000)
+# Third step
+my.cellproblems
+``` 
+
+### find number of needed time intervals:
+```r
+my.EstTime.plot<-EstTime(my.trans.table,   # contains expected transition probabilities (from the last section)
+                         t=50:100,         # limits the range of time intervals, which are testet.  
+                         k=5000)           # precission of the simulation
+                                           # Warning: The function is very time consuming!
+
+# printing will result in a plot of time point vs. expected number of low and zero frequencies
+my.EstTime.plot
+
+# if legend position should be change:
+attr(my.EstTime.plot, "pos")<-"topright" # alternatives are: bottomleft (default)
+my.EstTime.plot
 ```

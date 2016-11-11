@@ -54,9 +54,9 @@ __Content__
     * interpret clusters
     
 * (H) Additional functions
-  * expected transition rates
   * number of expected cell problems
   * find number of needed time intervals
+  
 ---
 
 ## A Prerequisite steps

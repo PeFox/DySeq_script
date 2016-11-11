@@ -82,28 +82,6 @@ __Content__
 </ol>
 
 
-
-* (A) Prerequisite Steps (A)                
-   * packages from CRAN                   
-   * package from Github                  
-
-* (B) Example Data                       
-  * loading the data                     
-  * details on data                      
-
-* (C) Graphical Analysis                 
-  * state-distribution-plot              
-  * entropy-plot                         
-  * Number of transitions                
-
-* (D) Research question 1:
-  * Pearson Correlation 
- 
-* (E) Research question 2:                   
-  * aggregated logit models
-    * step 1: state-transition tables
-    * step 2: multiple logit-regressions
-    * step 3: aggregating
 ---
 
 ## A Prerequisite steps

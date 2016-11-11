@@ -13,7 +13,7 @@ including the "Dyseq", which provides the sample data!
 
 Content                  
 
-A Prerequisite Steps (A)                
+* (A) Prerequisite Steps (A)                
    * packages from CRAN                   
    * package from Github                  
 
@@ -45,14 +45,14 @@ A Prerequisite Steps (A)
 * (F) Research question 3:                 
   * estimating hidden Markov model
 
-G. Research question 4:
+* (G) Research question 4:
   * estimating mixture Markov model
   * sequence clustering
     * OM-distances
     * clustering
     * interpret clusters
     
-H. Additional functions
+* (H) Additional functions
   * expected transition rates
   * number of expected cell problems
   * find number of needed time intervals

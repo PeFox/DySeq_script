@@ -24,19 +24,19 @@ __Content__
   <li>Example Data</li>
       <ul>
       <li>Loading the Data</li>
-      <li>Details on Data </li>
+      <li>Details on Data <br/><br/></li>
       </ul>
       
   <li>Graphical Analysis</li>
       <ul>
       <li>State-Distribution Plot</li>
       <li>Entropy Plot </li>
-      <li>Number of Transitions</li>
+      <li>Number of Transitions<br/><br/></li>
       </ul>  
       
   <li>Research question 1 </li>
       <ul>
-      <li>Pearson Correlation</li>
+      <li>Pearson Correlation<br/><br/></li>
       </ul>
       
   <li>Research Question 2 </li>
@@ -51,15 +51,35 @@ __Content__
       <li>Multi-Level APIM</li>
           <ul>
           <li>Data praparation</li>
-          <li> Applying MLM via lme4</li>
+          <li>Applying MLM via lme4</li>
           </ul>
-      <li>pears</li>
-      </ul>
+      <li>Basic Markov Model</li>
+          <ul>
+          <li>converting data</li>
+          <li>obtaining the transition matrix<br/><br/></li>
+          </ul>
       
   <li>Research question 3 </li>
+          <ul>
+          <li>  Hidden Markov Model <br/> <br/></li>
+          </ul> 
   <li>Research question 4 </li>
+        <ul>
+      <li>Mixture Markov Models</li>
+      <li>Multi-Level APIM</li>
+          <ul>
+          <li>OM-distances</li>
+          <li>clustering</li>
+          <li>interpreting clusters</li>
+          </ul>
   <li>Additional function </li>
+          <ul>
+          <li>number of expected cell problems</li>
+          <li>find number of needed time intervals</li>
+          </ul>
 </ol>
+
+
 
 * (A) Prerequisite Steps (A)                
    * packages from CRAN                   

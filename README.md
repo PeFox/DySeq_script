@@ -1,11 +1,13 @@
+#Analyzing dyadic sequence data - research questions and implied statistical models 
 
-##Analyzing dyadic sequence data - research questions and implied statistical models 
+Please note, a full R-script of this vignette is provided under the name DySeq_script_v0.1.R in this repository!
 
-This R-script provides a hands-on-tutorial for all
-analyses covered in 
+This Vignette provides a hands-on-tutorial for all analyses covered in 
+
 "Analyzing dyadic sequence data - research questions and implied statistical models"
 by  --- blinded for reviewing ---
- 
+published in --- still in review ---
+
 Please make sure to install all required packages,
 including the "Dyseq", which provides the sample data!
 
@@ -50,4 +52,11 @@ Content
     * clustering
     * interpret clusters
 
+---
+
+## Prerequisite steps
+
+make sure the following packages are installed:
+
+`<Test>`
 

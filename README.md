@@ -438,7 +438,9 @@ fit2  # print the results
 
 ## Research question 4: Are there latent groups of dyads, which might account for observing different reaction patterns?
 
-This question can be answered by a mixture Markov model or by the OM-procedure. We start with the Markov model: 
+This question can be answered by a mixture Markov model or by the OM-procedure. We start with 
+
+## the mixture Markov model: 
 
 ```r
 # his question can be answered by a mixture Markov model or by the OM-procedure 
@@ -481,4 +483,94 @@ fit3<-fit_model(my_mmodel,
                 control_em=list(restart = list(times=10)))
 
 fit3
-´´´
+```
+---
+
+## the OM-procedure
+
+Objects from previous sections needed: 
+- mydata     
+- my.expand  
+- couple.seq 
+- my.trans 
+- my.trans.SC
+
+Packages needes: 
+- DySeq
+- TraMineR
+
+
+##################
+## OM-procedure ##
+##################
+
+## Objects from previous sections needed: 
+#  - mydata     
+#  - my.expand  
+#  - couple.seq (see line 131)
+#  - SeqL (see line 150)
+#  - my.trans (see line 217)
+#  - my.trans.SC(see line 293)
+
+
+
+
+###  OM-Distances   
+
+Substitution-cost-matrix is derived by Gabadinho's TRATE-Formula
+```r
+submat <- seqsubm(couple.seq, method = "TRATE")
+```
+
+The substitution-cost-matrix is then used to calculate the distance-matrix
+```r
+dist.oml <- seqdist(couple.seq, method = "OM", sm = submat)
+```
+
+
+
+###  Determine optimal Number of clusters 
+
+First of all, the optimal number of clusters needs to be determined: 
+```r
+plot(pam(dist.oml, pamk(dist.oml)$nc), which.plot=1)
+```
+
+First Graph: [note: not shown in the article]                                                     
+                                                                                                   
+The distances describes a number of sequences minus 1 dimensional space, and therefore it is possible to plot them. However, the first plot projects the dissimilarities in a two-dimensional space. By this, information is lost and the distances shown in the plot won't    fit the distances in distance-matrix perfectely. Yet, this plot provides us with a first limpse into the cluster structure: here we see two clusters. However they are not completely distinct, because we caan see that they overlap a little bit! Furthermore, the smaller cluster (left) seem to be more homogenous (points are very close to each other) and the bigger one (right) seem to be more heterogenous (more dispersion).                                          
+                                                                                                  
+Second Graph: silhouette plot [note: not shown in the article]                                   
+
+The silhuette (s) is the distance of one object (sequence) to its clusters centroid minus          
+ the distance to the nearest clusters centroid devided by the maximal possible distance.            
+Therefore, the higher the mean s-values of a cluster, the stronger the found cluster structure.    
+                                                                                                    
+[see: Peter J. Rousseeuw, Silhouettes:                                                             
+A graphical aid to the interpretation and validation of cluster analysis,                   
+Journal of Computational and Applied Mathematics, Volume 20, 1987, Pages 53-65]             
+
+The plot contains the following information:                                                       
+- 2 clusters are identified                                                                       
+- First one includes 38 observations with s=.43                                                   
+- Second one includes 26 observations with s=.59                                                 
+- The overall mean s is .5                                                                        
+                                                                                                  
+- typical rules of thumb are: 1 >= s >.75 strong structure                                         
+                              0.75 >= s > 0.50 medium structure                                    
+                              0.50 >= s > 0.25 week structure                                     
+                              0.25 >= s > 0 no real structure                                    
+                                                                                                   
+The mean silhuette value indactes an overall weak cluster structure. Therefore, additional methods should be used to determine the optimal number of clusters. Here, for example, a screeplot and adendrogramm:
+
+Screeplot: (Indicating 1 or 2 clusters)
+```r
+wss <- (nrow(dist.oml)-1)*sum(apply(mydata,2,var))
+for (i in 2:15) wss[i] <- sum(kmeans(mydata, centers=i)$withinss)
+plot(1:15, wss, type="b", xlab="Number of Clusters", ylab="Within groups sum of squares")
+```r
+
+Dendrogramm: (Indicating 2, maybe 3, Clustersolution)
+```r
+plot(agnes (dist.oml, diss=TRUE, method = "ward"), which.plots=2)
+```

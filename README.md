@@ -13,23 +13,23 @@ including the "Dyseq", which provides the sample data!
 
 Content                  
 
-1. Prerequisite Steps                
+A. Prerequisite Steps                
   * packages from CRAN                   
   * package from Github                  
 
-2. Example Data                      
+B. Example Data                      
   * loading the data                     
   * details on data                      
 
-3. Graphical Analysis                 
+C. Graphical Analysis                 
   * state-distribution-plot              
   * entropy-plot                         
   * Number of transitions                
 
-4. Research question 1  
+D. Research question 1  
   * Pearson Correlation 
  
-5. Research question 2:                   
+E. Research question 2:                   
   * aggregated logit models
     * step 1: state-transition tables
     * step 2: multiple logit-regressions
@@ -42,10 +42,10 @@ Content
     * converting data
     * obtaining the transition matrix
 
-6. Research question 3:                 
+F. Research question 3:                 
   * estimating hidden Markov model
 
-7. Research question 4:
+G. Research question 4:
   * estimating mixture Markov model
   * sequence clustering
     * OM-distances
@@ -54,7 +54,7 @@ Content
 
 ---
 
-## Prerequisite steps
+## 1 Prerequisite steps
 
 make sure the following packages are installed:
 

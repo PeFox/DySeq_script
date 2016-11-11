@@ -128,13 +128,13 @@ citation("RColorBrewer")
 
 
 ```r
-# create labels for plot
+# Create labels for plot
 couple.labels <-c("none",     # no reaction
                   "SC only",  # only stress communication
                   "DC only",  # only dyadic coping
                   "SC+DC")    # stress and dyadic
 
-# create a stslist object (TraMineR S3-Class)
+# Create a stslist object (TraMineR S3-Class)
 couple.seq <- seqdef(my.expand,              # the combined states 
                      labels = couple.labels) # the label
 
@@ -490,7 +490,7 @@ fit3
 ```
 ---
 
-## the OM-procedure
+## OM-procedure
 
 Objects from previous sections needed: 
 - mydata     

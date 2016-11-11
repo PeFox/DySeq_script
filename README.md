@@ -185,5 +185,42 @@ abline(lm(SC.sumscores~DC.sumscores))
 ![alt text](https://github.com/PeFox/DySeq_script/blob/master/Scatter_plotDCSC.png "Scatterplot(SC,DC)")
 
 
+---
+
+## E. Research Question 2: Does the behavior of one member trigger an immediate reaction by the other?
+
+Following objects from the previous sections are needed:
+- mydata      (the example data)
+- my.expand   (the combined sequences)
+
+Following Packages are needed:
+- DySeq
+- lme4      (for MLM approach)
+- lmerTest  (for MLM approach)
+- TraMineR  (for the basic Markov model)
+- seqHMM    (For the basic Markov model)
 
 
+### Bakeman & Gottman approach: Step 1
+
+First step is transforming the sequences into transition tables.
+That can be done by DySeq's function StateTrans, whoch stores the transition tables in a list of the class 'state.trans'. 
+
+```r
+my.trans<-StateTrans(my.expand,   # the combined sequences
+                     first=FALSE) 
+```
+The argument 'first' specifies which sequence should be used as a dependend variable. 
+When my.expand was created, SC was defined as the first sequence and DC as the second sequence. Therefore, DC is now the dependend variable of the transition tables. 
+
+```r
+# Just print a state.trans object to get the relative frequencies accross all dyads!
+my.trans
+
+# A single case can be plottet by using the [[]] operator
+my.trans[[1]] # inspects the first table!
+
+# If the original data.frame containes a ID-variable, the following can be used:
+ID<-mydata$code             # stores the ID-variable in the object ID
+my.trans[[which(ID==129)]]  # inspects the dyad with ID=129
+```

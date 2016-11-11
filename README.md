@@ -58,7 +58,7 @@ Content
 
 make sure the following packages are installed:
 
-``` 
+``` r
 install.packages("TraMineR")      # for graphical analysis and research question 4
 install.packages("RColorBrewer")  # for grey-shaded graphics
 install.packages("gmodels")       # must be installed!

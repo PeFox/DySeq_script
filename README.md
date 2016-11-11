@@ -14,7 +14,7 @@ including the "Dyseq", which provides the sample data!
 
 __Content__                  
 
-<ol type="a">
+<ol type="A">
   <li>Prerequisite Steps</li>
       <ul>
       <li>packages from CRAN</li>
@@ -71,8 +71,9 @@ __Content__
           <ul>
           <li>OM-distances</li>
           <li>clustering</li>
-          <li>interpreting clusters</li>
+          <li>interpreting clusters<br/> <br/></li>
           </ul>
+        </ul>
   <li>Additional function </li>
           <ul>
           <li>number of expected cell problems</li>

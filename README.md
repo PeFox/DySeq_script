@@ -69,5 +69,6 @@ install.packages("cluster")       # must be installed for research question 4!
 install.packages("devtools")      # must be installed for installing packages from github
 install.packages("lme4")          # must be installed for the multi-level APIM
 install.packages("lmerTest")      # must be installed for the multi-level APIM
+install.packages("seqHMM")        # must be installed for Markov models
 ```
 

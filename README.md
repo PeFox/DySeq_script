@@ -444,7 +444,7 @@ fit2  # print the results
 
 This question can be answered by a mixture Markov model or by the OM-procedure. We start with 
 
-## the mixture Markov model: 
+## Mixture Markov model: 
 
 ```r
 # his question can be answered by a mixture Markov model or by the OM-procedure 

@@ -9,7 +9,7 @@ by  --- blinded for reviewing ---
 published in --- still in review ---
 
 Please make sure to install all required packages,
-including the "Dyseq", which provides the sample data!
+including the "Dyseq", which provides the example data!
 
 
 __Content__                  

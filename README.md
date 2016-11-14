@@ -103,6 +103,7 @@ install.packages("seqHMM")        # must be installed for Markov models
 ```
 
 Make sure to delete previous Versions of DySeq before installing a new version from GitHub!
+
 ``` r
 remove.packages("DySeq")      # remove older Version von DySeq     
 install_github("PeFox/DySeq") # Install DySeq from GitHub
@@ -127,7 +128,7 @@ help(DySeq)           # get more information about the data set
 
 # Most following approaches will need combined states!
 # The function StateExpand can combine tow sequences into one!
-```r
+
 my.expand<-StateExpand(CouplesCope, 2:49, 50:97)
 ```
 

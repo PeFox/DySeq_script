@@ -2,14 +2,14 @@
 
 Please note, a full R-script of this vignette is provided under the name DySeq_script_v0.1.R in this repository!
 
-This Vignette provides a hands-on-tutorial for all analyses covered in 
+This vignette provides a hands-on-tutorial for all analyses covered in 
 
 "Analyzing dyadic sequence data - research questions and implied statistical models"
 by  --- blinded for reviewing ---
 published in --- still in review ---
 
 Please make sure to install all required packages,
-including the "Dyseq", which provides the example data!
+including "Dyseq", which provides the example data!
 
 
 __Content__                  
@@ -84,7 +84,7 @@ __Content__
 
 ---
 
-## A Prerequisite steps
+## A. Prerequisite steps
 
 make sure the following packages are installed:
 
@@ -102,10 +102,12 @@ install.packages("lmerTest")      # must be installed for the multi-level APIM
 install.packages("seqHMM")        # must be installed for Markov models
 ```
 
+The Package "devtools" must be installed and loaded for installing packages from Github
 Make sure to delete previous Versions of DySeq before installing a new version from GitHub!
 
 ``` r
-remove.packages("DySeq")      # remove older Version von DySeq     
+remove.packages("DySeq")      # remove older Version von DySeq 
+library(devtools)             # load devtools for enabling the install_github()-function
 install_github("PeFox/DySeq") # Install DySeq from GitHub
 ```
 
@@ -116,18 +118,17 @@ the multi-level approach until the next release!
 
 ## B. Example data
 
-The data stems from a study, which was promoted as a study on close relationship and stress. 
-Each row represents one dyad, each of them containing two sequences. Dyads are 64 heterosexuel
-couples. The females partners were stressed using the Trier Social Stress Test 
+The data stems from a study, which was promoted as a study on close relationship and stress. Each row represents one dyad, each of them containing two sequences. Dyads are 64 heterosexuel couples. The females partners were stressed using the Trier Social Stress Test 
 (TSST; Kirschbaum, Pirke, Hellhammer, 1993). Directly after the stress induction, both partners joint again and the couple was left alone for eight minutes. During this period (a 'fake' waiting condition) the two partners were filmed for 8 minutes divided into 48 intervals of ten seconds length. It was coded if the female partners showed stress communication (SC) within an interval (sequence 1; Colums 50:97) and if the male partner showd dyadic coping reactions (DC; sequence 2; columns 2:49). For rurther insides about dyadic coping and/or stress communication, see Bodenmann (2015).
 
 ```r
 library(DySeq)        # loading the DySeq Package
+help(DySeq)           # get more information about the package
 mydata<-CouplesCope   # getting the data
-help(DySeq)           # get more information about the data set
+help(CouplesCope)     # get more information about the data set
 
-# Most following approaches will need combined states!
-# The function StateExpand can combine tow sequences into one!
+# The majority of the following approaches will need combined states!
+# The function StateExpand can combine two sequences into one!
 
 my.expand<-StateExpand(CouplesCope, 2:49, 50:97)
 ```
@@ -142,7 +143,7 @@ Following objects from the previous sections are needed:
 Following Packages are needed:
 - DySeq
 - TraMineR
-- RColorBrewer
+- RColorBrewer (for advanced colors)
 
 ```r
 library(TraMineR)     # awesome package for sequence analysis in general!
@@ -187,6 +188,15 @@ SeqL<-seqtransn(couple.seq)
 hist(SeqL, main="Number of transitions", xlab="State-transitions")
 ```
 
+Note: The TraMineR-Package features a lot of other useful functions for analyzing and plotting sequence data. 
+Gabadinho and colleagues put great effort in providing a vast, comprehensive, yet easy-to-read vignette. 
+Please keep in mind to cite packges!
+
+```r
+vignette('TraMineR-state-sequence')    # get the TraMineR Vignette
+citation("TraMineR")                   # get information on how to cite TraMineR
+```
+
 ---
 
 ## D. Research Question 1: Is there an association between a particular behavior by one and the reaction by the other partner?
@@ -199,9 +209,9 @@ Following Packages are needed:
 
 ```r
 # NumbOccur counts how often a certain behavior is shown within each sequence
-SCstress.sumscores<-NumbOccur(x=mydata[,2:49],           # col: 2:49 represent stress communication (SC)
-                                          y=1,           # 0=no SC; 1=SC was shown 
-                                          prop=FALSE)    # absolute (TRUE) or relative (FALSE) frequency?
+SC.sumscores<-NumbOccur(x=mydata[,2:49],           # col: 2:49 represent stress communication (SC)
+                                    y=1,           # 0=no SC; 1=SC was shown 
+                                    prop=FALSE)    # absolute (TRUE) or relative (FALSE) frequency?
                                         
 DC.sumscores<-NumbOccur(mydata[,50:97], 1, prop=FALSE)  # Same for dyadic coping (DC)
 
@@ -242,8 +252,8 @@ That can be done by DySeq's function StateTrans, which stores the transition tab
 my.trans<-StateTrans(my.expand,   # the combined sequences
                      first=FALSE) 
 ```
-The argument 'first' specifies which sequence should be used as a dependend variable. 
-When my.expand was created, SC was defined as the first sequence and DC as the second sequence. Therefore, DC is now the dependend variable of the transition tables. 
+The argument 'first' specifies which sequence should be used as a dependend variable. Dependend variable in this context means, which behavior is shown at time *t* (columns), and dependend on the previous behavior at *t-1* (rows). 
+When my.expand was created via the StateExpand-function (see B.), SC was defined as the first sequence and DC as the second sequence. Therefore, DC is now the dependend variable of the transition tables.
 
 ```r
 # Just print a state.trans object to get the relative frequencies accross all dyads!
@@ -272,7 +282,7 @@ my.logseq<-LogSeq(my.trans,         # a list containing transition plots (from s
                  single.case=TRUE)  # if TRUE, stores single case results (and the function becomes slower)
 ```
 
-If a researcher is interested in single case analysis, the function single.LogSeq() can be used to obtain these in a ready-to-interpret table! p-value test whether betas are different from zero. Note that the p-value for the intercept is not implemented yet! 
+If a researcher is interested in single case analysis, the function single.LogSeq() can be used to obtain these in a ready-to-interpret table! p-value test whether betas are different from zero or not. Note that the p-value for the intercept is not implemented yet! 
 
 ```r
 # Single case analsis for transition plot 41 (aka couple 129)
@@ -300,7 +310,7 @@ plot(my.logseq)
 
 ### Bakeman & Gottman approach: Step 4
 
-Rerunning the procedure a second time but switching the dependend variable. 
+Re-running the procedure a second time but switching the dependend variable will result in the same analysis but with stress communication as dependent variable.  
 
 ```r
 my.trans.SC<-StateTrans(my.expand, first=TRUE)   # This time, the first sequence is the DV
@@ -316,11 +326,13 @@ Our previous results from step 3 contained the effects for men, while our second
 
 ### Multi-level approach: Step 1
 
-The first step is data preparation. First each transition must be recoded to be a single observation within a nested data structure. Transitions are level-1 observations, which are nested within dyads. That can be achieved by one single function from the DySeq-Package!
+The first step is data preparation. Each transition must be recoded to be a single observation within a nested data structure. Transitions are level-1 observations, which are nested within dyads. That can be achieved by one single function from the DySeq-Package!
 
 ```r
-library("lme4")      # Make sure all needed packages are loaded!
-library("lmerTest")
+                         # Make sure all needed packages are loaded!
+                         # DySeq is needed for this section too, but was already loaded before 
+library("lme4")          # lme4 is a package for fitting multi-level models
+library("lmerTest")      # lmerTest adds p-values to several statistics in lme4
 
 # ML_Trans transforms dyadic sequences into multi-level data!
 ML_data<-ML_Trans(data=CouplesCope,     # The data, which should be used!
@@ -328,7 +340,7 @@ ML_data<-ML_Trans(data=CouplesCope,     # The data, which should be used!
                         second=50:97)   # The sequence, which serves as the IV!
 ```
 
-If the data should be used to apply a multi-level APIM, transitions must be recoded first into lagged actor and lagged partner effects. The function MLAP_Trans does so. 
+If the data should be used to apply a multi-level APIM, transitions must be recoded first into lagged actor (LA) and lagged partner (LP) effects. The function MLAP_Trans does so. 
 
 ```r
  MLAP_data<-MLAP_Trans(ML_data) # ML_data must be the output of ML_Trans!
@@ -342,7 +354,7 @@ MLAP_data$sex<-as.factor(MLAP_data$sex)
 levels(MLAP_data$sex)<-c("female", "male")
 ```    
 
-MLAP_Trans uses dummy-coding per default. However, for the purposes of an APIM effect-coding is better, because it is easier to interpret. Furthermore, effect coding was also used in the article (-----). So for the sake of comparable results, we will stick to it for this case.  
+MLAP_Trans uses dummy-coding per default. However, for the purposes of an APIM effect-coding is better, because it is easier to interpret especially if effects should be compared between members of dyads. Furthermore, effect coding was also used in the article (-----). So for the sake of comparable results, we will stick to it for this case.  
 
 ```r
 MLAP_data$Partner[MLAP_data$Partner==0]<-(-1)
@@ -351,10 +363,10 @@ MLAP_data$Actor[MLAP_data$Actor==0]<-(-1)
 
 ### Multi-level approach: Step 2 
 
-The second stept is applying and testing MLM-models. There are a vast and increasing number of packages in R, wich can run multi-level modells. However, lme4 became one of the best known packages for multi-level analysis, and an increasing number of tutorials are spreading through the net. Thus, we will stick to lme4, too. Do not forget to cite lme4 and lmerTest if you use this approach!
+The second step is applying and testing MLM-models. There is a vast and increasing number of packages in R, wich can run multi-level models. However, lme4 became one of the best known packages for multi-level analysis, and an increasing number of tutorials are spreading through the net. Thus, we will stick to lme4, too. Do not forget to cite lme4 and lmerTest if you use this approach! (Again, use the citation()-function to get additional information on how to cite a particular package!
 
 
-The following shows the most complex modell, which is possible to estimate. There will be some estimation problems with this model, but it will serve as an example to explain the function's arguments. 
+The following shows the most complex modell, which is possible to estimate. There will be some estimation problems with this model, such as that estimates will be very close to thei boundaries. However, it will serve as an example to explain the function's arguments. 
 ```r
 set.seed(1234)                                             # setting SEED for replication purposes!
 fit<-glmer(DV~1+sex+Actor+Partner+Actor*Partner+           # intercept, Actor, Partner and interaction effect for the referrence group
@@ -391,29 +403,32 @@ BIC(fit)
  
 ### Basic Markov model
 
-The TraMineR-package provides a function to fit a basic Markov model. The couple.seq object is needed, which was created in the 'graphic analysis' section!
+The TraMineR-package provides a function to fit a basic Markov model. The couple.seq object is needed, which was created in the 'graphic analysis' section! 
 
 ```r
 round(seqtrate(couple.seq),2) # the round command is optional, and rounds the transition matrix to two digits
 ```
 
-The second way, using the seqHMM-package is a little bit more complicated at the first glance. However, its worth to try this package too, because hidden Markov and mixture Markov model follow the exact same logic. Please cite seqHMM if you are using it for your analysis!
+The second way, using the seqHMM-package is a little bit more complicated at the first glance. However, it is worth to try this package too, because hidden Markov and mixture Markov model follow the exact same logic. Please cite seqHMM if you are using it for your analysis!
 
 ```r
 
 # First of all, starting values for the transition matrix must be specified
 # each row must add up to one! In this case we assume that each transition is equally likely!
-# One of the advantages of seqHMM is, that restriction can be added (e.g. setting a value to zero
-# will set it zero).
-mytrans<-matrix(.25, 4,4)
+# One of the advantages of seqHMM is, that restrictions can be added. For example, setting a value to zero
+# will restrict it to zero, same goes for setting a vaue to 1. All other values will be used as starting values for 
+# the estimation process.
+
+mytrans<-matrix(.25, 4,4)  # a 4*4 Matrix with all starting transition probabilties equals .25
+                           # other starting values can be used, but all rows must add up to 1!
 
 # Same for the initial probabilities
-myinit<-c(.25,.25,.25,.25)
+myinit<-c(.25,.25,.25,.25)   
 
 # Builds the acutal model
-mybuild<-build_mm(couple.seq,
-         mytrans,
-         myinit)
+mybuild<-build_mm(couple.seq,    # the data
+         mytrans,                # starting values for transitions
+         myinit)                 # starting values for the initial probabilities (probabilities at t=0)
 
 # Fits the model on the data
 fit<-fit_model(mybuild)
@@ -425,6 +440,9 @@ fit
 AIC(fit$model)   # Akaike information criterion (AIC; a comparative fit index)
 BIC(fit$model)   # Bayesian information criterion (BIC; a more conservative fit index)
 ```
+
+Note: Helske & Helske did a great job on providing a very user-friendly package. Again, please cite packages you use. Reading the vignette is strongly recommended, which can be assessed by typing vignette('seqHMM').
+
 
 ---
 
@@ -452,13 +470,12 @@ my_emission<-matrix(c(.25),2,4)
 # and four columns for eacht observed state
 
 myinit2<-c(.50, .50) 
-# Because the hidden chain is now a 2*2 matirx, we only need two
-# initial probabilities
+# Because the hidden chain is now a 2*2 matirx, we only need two initial probabilities
 
-my_hmodel<-build_hmm(couple.seq,
-                       myhtrans,
-                    my_emission,
-                        myinit2)
+my_hmodel<-build_hmm(couple.seq,   # the data
+                       myhtrans,   # starting values for transition probabilities for the hidden chain
+                    my_emission,   # starting probabilties for the emissions
+                        myinit2)   # starting probabilities for the initial probabilities for the hidden chain
 
 fit2<-fit_model(my_hmodel)
 
@@ -473,46 +490,46 @@ This question can be answered by a mixture Markov model or by the OM-procedure. 
 
 ## Mixture Markov model: 
 
+
+Needs following objects:
+couple.seq (created in the graphics section, using TraMineR-package)
+
+Following packages needed:
+seqHMM
+
+
+First of all we have to specify starting values for the each chain so we need as many chains as there a latent groups. For the sake of examplification we will assume two groups:
+
 ```r
-# his question can be answered by a mixture Markov model or by the OM-procedure 
-
-# Needs following objects:
-# couple.seq (created in the graphics section, using TraMineR-package)
-
-# Following packages needed:
-# seqHMM
-
-
-# First of all we have to specify starting values for the each chain
-# so we need as many chains as there a latent groups. For the sake of 
-# examplification we will assume two groups:
-
 # These are transition matrices for the observed states,
 # therefore they have the as many rows and columns as observed states:
 mytrans1<-matrix(c(.25), 4,4)
 mytrans2<-matrix(c(.25), 4,4)
-# Those transition matrices must be placed into a list, before
-# building the model
-mymixtrans<-list(mytrans1, mytrans2)
+# We have to define two matrices, because we assume two latent groups. Both of which have to their own chain. 
+# The transition matrices must be placed into a list, before building the model
+mymixtrans<-list(mytrans1, mytrans2) # placing the matrices into a list
 
-# There are not emissions because there are no hidden states! 
+# There are no emissions because there are no hidden states! 
 
-# However, we need to sets of starting values. One for each chain!
+# Still, we need to set the starting values for the initial probabilities. One for each chain!
 myinit1<-c(.25, .25, .25, .25) 
 myinit2<-c(.25, .25, .25, .25) 
 # again both must be placed inside a list:
 mymixinit<-list(myinit1, myinit2)
 
 
-my_mmodel<-build_mmm(couple.seq, 
-                    mymixtrans,
-                    mymixinit)
+my_mmodel<-build_mmm(couple.seq,  # the data
+                    mymixtrans,   # starting values for the two chain`s transition probabilities
+                    mymixinit)    # starting values for the two chain`s initial probabilities 
 
 fit3<-fit_model(my_mmodel,                   
                 global_step=TRUE,     # additional arguments for the optimizier
                 local_step=TRUE,      # to avoid local maximum
-                control_em=list(restart = list(times=10)))
-
+                control_em=list(restart = list(times=10)))  # rerunning the optimizer several times for avoiding 
+                                                            # a local maxima. That is simplified, the optimizer 
+                                                            # finds the wrong best fitting solution. 
+                                                            # times=10 specifies that the procedure runs 10 times
+                                                            # and returns the best fitting one. 
 fit3
 ```
 ---
@@ -554,13 +571,11 @@ plot(pam(dist.oml, pamk(dist.oml)$nc), which.plot=1)
 
 First Graph: [note: not shown in the article]                                                     
                                                                                                    
-The distances describes a number of sequences minus 1 dimensional space, and therefore it is possible to plot them. However, the first plot projects the dissimilarities in a two-dimensional space. By this, information is lost and the distances shown in the plot won't    fit the distances in distance-matrix perfectely. Yet, this plot provides us with a first limpse into the cluster structure: here we see two clusters. However they are not completely distinct, because we caan see that they overlap a little bit! Furthermore, the smaller cluster (left) seem to be more homogenous (points are very close to each other) and the bigger one (right) seem to be more heterogenous (more dispersion).                                          
+The distances describes a number of sequences minus 1 dimensional space, and therefore it is possible to plot them. However, the first plot projects the dissimilarities in a two-dimensional space. By this, information is lost and the distances shown in the plot won't    fit the distances in distance-matrix perfectely. Yet this plot provides us with a first limpse into the cluster structure: here we see two clusters. However they are not completely distinct, because we caan see that they overlap a little bit! Furthermore, the smaller cluster (left) seem to be more homogenous (points are very close to each other) and the bigger one (right) seem to be more heterogenous (more dispersion).                                          
                                                                                                   
 Second Graph: silhouette plot [note: not shown in the article]                                   
 
-The silhuette (s) is the distance of one object (sequence) to its clusters centroid minus          
- the distance to the nearest clusters centroid devided by the maximal possible distance.            
-Therefore, the higher the mean s-values of a cluster, the stronger the found cluster structure.    
+The silhuette (s) is the distance of one object (sequence) to its clusters centroid minus the distance to the nearest clusters centroid devided by the maximal possible distance. Therefore, the higher the mean s-values of a cluster, the stronger the found cluster structure.    
                                                                                                     
 [see: Peter J. Rousseeuw, Silhouettes:                                                             
 A graphical aid to the interpretation and validation of cluster analysis,                   
@@ -603,9 +618,9 @@ cluster2 <- cutree (clusterward1, k=2)                       # saving the two-cl
 cluster2fac <- factor (cluster2, labels = c("cluster 1; fast coper", "cluster 2; slow coper"))
 ```
 
-Note that the number of observational units of both clusters doesn't match exactly the n from the silhuette test! 
-This is because the latter depends on another algorithm. Typically they provide the same cluster solutions. However, in this case one sequence was assgigned differently. The first plot from line 478 shows that exactly one sequence is located in the overlapping area
-between both clusters. Because of that, some algorithms assign it to the fist, other to the second cluster. However, changing its cluster - or deleting that observation - would not lead to other results. 
+Please note that the number of observational units of both clusters doesn't match exactly the n from the silhuette test! 
+This is because the latter depends on another algorithm. Typically they provide very similar cluster solutions. However, in this case one sequence was assigned differently. The first plot from line 478 shows that exactly one sequence is located in the overlapping area
+between both clusters. Because of that, some algorithms assign it to the first, other to the second cluster. However, changing its cluster - or deleting that observation - would not lead to other results. 
 
 ### Comparing the clusters
 

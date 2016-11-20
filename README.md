@@ -1,6 +1,6 @@
 #Analyzing dyadic sequence data - research questions and implied statistical models 
 
-Please note, a full R-script of this vignette is provided under the name DySeq_script_v0.1.R in this repository!
+Please note, a full R-script of this vignette is provided under the name **DySeq_script_v0.1.R** in this repository!
 
 This vignette provides a hands-on-tutorial for all analyses covered in 
 

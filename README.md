@@ -134,7 +134,7 @@ my.expand<-StateExpand(CouplesCope, 2:49, 50:97)
 ```
 
 ---
-# C. Graphical Analysis
+## C. Graphical Analysis
 
 Following objects from the previous sections are needed:
 - mydata      (the example data)

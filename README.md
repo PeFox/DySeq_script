@@ -269,7 +269,7 @@ my.trans[[which(ID==129)]]  # inspects the dyad with ID=129
 # If relative frequencies are preferred for single case analysis, just divide the transition table by its sum.
 # The following shows an example for the 41th transition table, which belongs to the couple with ID 129. 
 # round(x,3) rounds the frequencies to three digits
-round(my.trans[[41]]/sum(my.trans[[41]],3)
+round(my.trans[[41]]/sum(my.trans[[41]],3))
 ```
 
 ### Bakeman & Gottman approach: Step 2 
@@ -366,7 +366,9 @@ MLAP_data$Actor[MLAP_data$Actor==0]<-(-1)
 The second step is applying and testing MLM-models. There is a vast and increasing number of packages in R, wich can run multi-level models. However, lme4 became one of the best known packages for multi-level analysis, and an increasing number of tutorials are spreading through the net. Thus, we will stick to lme4, too. Do not forget to cite lme4 and lmerTest if you use this approach! (Again, use the citation()-function to get additional information on how to cite a particular package!
 
 
-The following shows the most complex modell, which is possible to estimate. There will be some estimation problems with this model, such as that estimates will be very close to thei boundaries. However, it will serve as an example to explain the function's arguments. 
+The following shows the most complex modell, which is possible to estimate. There will be some estimation problems with this model, such as that estimates will be very close to thei boundaries. However, it will serve as an example to explain the function's arguments.
+
+Warning: the actual estimation of these MLMs can be very time consuming. The more complex, the longer the estimation procedure (estimation of the most complex model can take up to ten minutes). 
 ```r
 set.seed(1234)                                             # setting SEED for replication purposes!
 fit<-glmer(DV~1+sex+Actor+Partner+Actor*Partner+           # intercept, Actor, Partner and interaction effect for the referrence group

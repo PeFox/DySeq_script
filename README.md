@@ -568,7 +568,7 @@ dist.oml <- seqdist(couple.seq, method = "OM", sm = submat)
 
 First of all, the optimal number of clusters needs to be determined: 
 ```r
-plot(pam(dist.oml, pamk(dist.oml)$nc), which.plot=1)
+plot(pam(dist.oml, pamk(dist.oml)$nc))
 ```
 
 First Graph: [note: not shown in the article]                                                     
